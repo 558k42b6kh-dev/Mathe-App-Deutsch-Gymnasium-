@@ -1,0 +1,2120 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathe 2. Klasse AHS – Interaktiv</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;padding:15px;color:#333}
+.app{max-width:820px;margin:0 auto;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden}
+header{background:linear-gradient(135deg,#4facfe,#00f2fe);color:#fff;padding:20px 25px}
+header h1{font-size:1.4em;margin-bottom:3px}
+header p{opacity:.9;font-size:.85em}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+.stats{display:flex;gap:14px;flex-wrap:wrap;font-size:.85em}
+.stat{background:rgba(255,255,255,.25);padding:5px 12px;border-radius:20px;font-weight:600}
+.progress-mini{height:6px;background:rgba(255,255,255,.3);border-radius:3px;margin-top:10px;overflow:hidden}
+.progress-mini>div{height:100%;background:#fff;width:0%;transition:width .4s;border-radius:3px}
+.main{padding:22px 25px}
+.breadcrumb{font-size:.8em;color:#6c757d;margin-bottom:15px;cursor:pointer}
+.breadcrumb span:hover{color:#667eea;text-decoration:underline}
+h2.section-title{font-size:1.3em;color:#333;margin-bottom:6px}
+p.section-sub{color:#6c757d;font-size:.9em;margin-bottom:18px}
+.grid{display:grid;gap:12px}
+.grid-2{grid-template-columns:1fr 1fr}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr}}
+.card{background:#f8f9fa;border:2px solid #e9ecef;border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;position:relative}
+.card:hover{border-color:#667eea;background:#f0f4ff;transform:translateY(-2px);box-shadow:0 6px 16px rgba(102,126,234,.15)}
+.card h3{font-size:1em;margin-bottom:4px;color:#333}
+.card .sub{font-size:.8em;color:#6c757d}
+.card .badge{position:absolute;top:12px;right:12px;font-size:.75em;background:#e9ecef;color:#495057;padding:3px 8px;border-radius:10px;font-weight:600}
+.card.done{border-color:#28a745;background:#d4edda}
+.card.done .badge{background:#28a745;color:#fff}
+.btn{padding:11px 22px;border:none;border-radius:10px;font-size:.95em;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-primary{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(102,126,234,.4)}
+.btn-secondary{background:#e9ecef;color:#495057}
+.btn-secondary:hover{background:#dee2e6}
+.btn-row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.level-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
+@media(max-width:600px){.level-grid{grid-template-columns:1fr}}
+.level-btn{padding:16px;border:2px solid #e9ecef;border-radius:12px;cursor:pointer;background:#fff;text-align:left;font-family:inherit;transition:all .2s;position:relative}
+.level-btn:hover{border-color:#667eea;transform:translateY(-2px)}
+.level-btn .lv{font-weight:700;font-size:1em;color:#333;display:block;margin-bottom:3px}
+.level-btn .lvd{font-size:.78em;color:#6c757d}
+.level-btn.einstieg{border-left:5px solid #4facfe}
+.level-btn.grundlagen{border-left:5px solid #28a745}
+.level-btn.fortgeschritten{border-left:5px solid #ffc107}
+.level-btn.experten{border-left:5px solid #dc3545}
+.level-btn.multistep{border-left:5px solid #a855f7;grid-column:1/-1;background:linear-gradient(135deg,#faf5ff,#f3e8ff)}
+.level-btn.multistep:hover{background:linear-gradient(135deg,#f3e8ff,#e9d5ff)}
+.q-card{background:#f8f9fa;border-radius:14px;padding:22px;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.q-type{display:inline-block;font-size:.7em;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:4px 10px;border-radius:10px;margin-bottom:10px}
+.t-mc{background:#e3f2fd;color:#1565c0}.t-fill{background:#fff3e0;color:#e65100}.t-match{background:#f3e5f5;color:#6a1b9a}
+.t-multi{background:#f3e8ff;color:#7c3aed}
+.q-level{float:right;font-size:.75em;color:#6c757d;font-weight:600}
+.q-text{font-size:1.1em;font-weight:600;line-height:1.5;margin-bottom:16px}
+.options{display:flex;flex-direction:column;gap:9px}
+.opt{padding:13px 16px;border:2px solid #dee2e6;border-radius:11px;background:#fff;cursor:pointer;font-size:.98em;text-align:left;font-family:inherit;transition:all .2s}
+.opt:hover:not(.dis){border-color:#667eea;background:#f0f4ff}
+.opt.correct{background:#d4edda;border-color:#28a745;color:#155724}
+.opt.wrong{background:#f8d7da;border-color:#dc3545;color:#721c24}
+.opt.dis{cursor:default}
+.fill-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fill-row input{flex:1;min-width:180px;padding:13px 16px;border:2px solid #dee2e6;border-radius:11px;font-size:1em;font-family:inherit;outline:none}
+.fill-row input:focus{border-color:#667eea}
+.fill-row input.correct{border-color:#28a745;background:#d4edda}
+.fill-row input.wrong{border-color:#dc3545;background:#f8d7da}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.m-item{padding:12px;border:2px solid #dee2e6;border-radius:10px;text-align:center;cursor:pointer;background:#fff;font-size:.92em;transition:all .2s;user-select:none}
+.m-item:hover:not(.matched){border-color:#667eea}
+.m-item.sel{background:#e3f2fd;border-color:#1565c0}
+.m-item.matched{background:#d4edda;border-color:#28a745;cursor:default;opacity:.7}
+.m-item.blink{background:#f8d7da;border-color:#dc3545}
+.feedback{margin-top:16px;padding:15px;border-radius:11px;font-size:.95em;line-height:1.6;display:none;animation:fadeIn .3s}
+.feedback.show{display:block}
+.feedback.correct{background:#d4edda;border-left:5px solid #28a745}
+.feedback.wrong{background:#f8d7da;border-left:5px solid #dc3545}
+.feedback strong{display:block;margin-bottom:6px;font-size:1.05em}
+.feedback .regel{margin-top:8px;padding:8px 10px;background:rgba(255,255,255,.6);border-radius:8px;font-size:.9em}
+.erklaerung-box{background:#e3f2fd;border-left:5px solid #1565c0;border-radius:11px;padding:20px;line-height:1.7;margin-bottom:16px}
+.erklaerung-box h3{color:#1565c0;margin-bottom:10px;font-size:1.1em}
+.erklaerung-box p{margin-bottom:10px;font-size:.95em}
+.erklaerung-box code{background:#fff;padding:2px 6px;border-radius:5px;font-family:monospace;font-size:.9em}
+.erklaerung-box .beispiel{background:#fff;padding:12px;border-radius:9px;margin:10px 0;border-left:3px solid #4facfe}
+.step-bar{display:flex;gap:6px;margin-bottom:15px}
+.step-dot{flex:1;height:8px;background:#e9ecef;border-radius:4px;transition:background .3s}
+.step-dot.active{background:#a855f7}
+.step-dot.done{background:#28a745}
+.step-counter{font-size:.8em;color:#7c3aed;font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px}
+.prev-steps{background:#fff;border-radius:10px;padding:12px;margin-bottom:14px;font-size:.9em;border-left:3px solid #28a745}
+.prev-steps .prev-step{margin-bottom:6px;color:#155724}
+.prev-steps .prev-step:last-child{margin-bottom:0}
+.prev-steps .prev-step b{color:#0d4a1a}
+.xp-float{position:fixed;top:20px;right:20px;background:#ffc107;color:#333;padding:8px 18px;border-radius:20px;font-weight:700;font-size:.9em;box-shadow:0 4px 15px rgba(255,193,7,.5);z-index:100;display:none;animation:pop .3s}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
+.overlay.show{display:flex}
+.lvlup{background:#fff;border-radius:20px;padding:35px;text-align:center;max-width:340px;animation:pop .4s}
+.lvlup .emo{font-size:3.5em;margin-bottom:8px}
+.lvlup h2{color:#667eea;font-size:1.8em;margin-bottom:8px}
+.lvlup p{color:#6c757d;margin-bottom:18px}
+.reset{text-align:center;padding:14px;font-size:.78em;color:#adb5bd;cursor:pointer;text-decoration:underline}
+.reset:hover{color:#dc3545}
+.summary{background:#f3e8ff;border-radius:12px;padding:18px;margin-top:10px;border-left:5px solid #a855f7}
+.summary h3{color:#7c3aed;margin-bottom:10px}
+.summary .sum-step{padding:8px;background:#fff;border-radius:8px;margin-bottom:6px;font-size:.9em;color:#333}
+.summary .sum-step b{color:#7c3aed}
+
+/* Dark Mode */
+body.dark{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#e0e0e0}
+body.dark .app{background:#1e1e2f;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+body.dark header{background:linear-gradient(135deg,#0f3460,#16213e)}
+body.dark .card,body.dark .q-card,body.dark .level-btn,body.dark .erklaerung-box{background:#2a2a3e;border-color:#3a3a5a;color:#e0e0e0}
+body.dark .card:hover,body.dark .level-btn:hover{background:#3a3a5a;border-color:#667eea}
+body.dark .card h3,body.dark .level-btn .lv,body.dark h2.section-title,body.dark .q-text{color:#fff}
+body.dark .breadcrumb,body.dark .section-sub,body.dark .lvd,body.dark .q-level{color:#aaa}
+body.dark .opt,body.dark .m-item,body.dark input{background:#2a2a3e;border-color:#444;color:#eee}
+body.dark .feedback.correct{background:#1e3a2f;color:#a0d0b0}
+body.dark .feedback.wrong{background:#3a1e1e;color:#d0a0a0}
+body.dark .prev-steps,body.dark .summary{background:#2a2a3e}
+body.dark .btn-secondary{background:#3a3a5a;color:#eee}
+body.dark .reset{color:#888}
+.theme-toggle,.export-btn{background:rgba(255,255,255,.25);border:none;color:#fff;padding:5px 12px;border-radius:20px;cursor:pointer;font-weight:600;font-size:.85em}
+.hint-row{margin:10px 0;display:flex;gap:8px;align-items:center}
+.hint-box{background:#fff3cd;border-left:4px solid #ffc107;padding:10px;border-radius:8px;margin:10px 0;font-size:.9em;display:none}
+.hint-box.show{display:block}
+body.dark .hint-box{background:#3a3010;color:#ffe}
+
+
+.game-timer{font-size:1.4em;font-weight:700;color:#a855f7;text-align:center;margin:10px 0}
+.game-score{font-size:1.1em;font-weight:600;text-align:center;margin-bottom:15px}
+.game-end{text-align:center;padding:30px}
+.game-end h2{color:#667eea;margin-bottom:10px}
+
+</style>
+</head>
+<body>
+<div class="xp-float" id="xpFloat">+10 XP</div>
+<div class="app">
+<header>
+<h1>🧮 Mathematik – 2. Klasse AHS</h1>
+<p>Interaktiv lernen nach österreichischem Lehrplan</p>
+<div class="topbar">
+
+<div class="stats">
+<div class="stat">⭐ <span id="sXp">0</span> XP</div>
+<div class="stat">🎯 Level <span id="sLevel">1</span></div>
+<div class="stat">🔥 <span id="sStreak">0</span></div>
+<div class="stat">✅ <span id="sCorrect">0</span></div>
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙 Dunkel</button>
+</div>
+
+</div>
+<div class="progress-mini"><div id="progressMini"></div></div>
+</header>
+<div class="main" id="main"></div>
+
+<div style="text-align:center;padding:8px 14px;font-size:.78em">
+<button class="btn btn-secondary" style="padding:6px 14px;font-size:.85em" onclick="exportProgress()">📤 Fortschritt exportieren</button>
+<button class="btn btn-secondary" style="padding:6px 14px;font-size:.85em" onclick="importProgress()">📥 Importieren</button>
+</div>
+<div class="reset" id="reset">Fortschritt zurücksetzen</div>
+
+</div>
+<div class="overlay" id="lvlOverlay">
+<div class="lvlup">
+<div class="emo">🎉</div>
+<h2 id="lvlTitle">Level 2!</h2>
+<p>Super gemacht! Weiter so!</p>
+<button class="btn btn-primary" onclick="closeLvl()">Weiter</button>
+</div>
+</div>
+
+<script>
+/* ============ HELPERS ============ */
+let _seed=1;
+function srand(s){_seed=((s>>>0)||1);}
+function ri(a,b){_seed=(_seed*1103515245+12345)&0x7fffffff;return a+Math.floor(_seed/0x7fffffff*(b-a+1));}
+function pick(a){return a[ri(0,a.length-1)];}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=ri(0,i);[a[i],a[j]]=[a[j],a[i]];}return a;}
+function gcd(a,b){return b?gcd(b,a%b):a;}
+function lcm(a,b){return a*b/gcd(a,b);}
+function isPrime(n){if(n<2)return false;for(let i=2;i*i<=n;i++)if(n%i===0)return false;return true;}
+function pf(n){const f=[];for(let i=2;i*i<=n;i++)while(n%i===0){f.push(i);n/=i;}if(n>1)f.push(n);return f;}
+function pfStr(n){const m={};pf(n).forEach(p=>m[p]=(m[p]||0)+1);return Object.keys(m).map(p=>m[p]>1?p+'^'+m[p]:p).join('·');}
+function hash(s){let h=0;for(let i=0;i<s.length;i++)h=((h<<5)-h+s.charCodeAt(i))|0;return h;}
+
+function normalize(s){
+  if(!s) return '';
+  return String(s).trim().toLowerCase()
+    .replace(/\s+/g,'')
+    .replace(/,/g,'.')
+    .replace(/·/g,'*')
+    .replace(/×/g,'*')
+    .replace(/÷/g,'/')
+    .replace(/:/g,'/');
+}
+function answersMatch(user, correct, alts){
+  const u = normalize(user);
+  if(!u) return false;
+  if(u === normalize(correct)) return true;
+  return (alts||[]).some(a => u === normalize(a));
+}
+
+function toggleTheme(){
+  document.body.classList.toggle('dark');
+  const isDark = document.body.classList.contains('dark');
+  localStorage.setItem('mathe2_theme', isDark ? 'dark' : 'light');
+  document.getElementById('themeToggle').textContent = isDark ? '☀️ Hell' : '🌙 Dunkel';
+}
+function loadTheme(){
+  if(localStorage.getItem('mathe2_theme')==='dark'){
+    document.body.classList.add('dark');
+    const btn = document.getElementById('themeToggle');
+    if(btn) btn.textContent = '☀️ Hell';
+  }
+}
+
+function exportProgress(){
+  const data = JSON.stringify(S, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'mathe2_fortschritt_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+function importProgress(){
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = '.json';
+  inp.onchange = e => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try{
+        const data = JSON.parse(ev.target.result);
+        if(data && typeof data.xp === 'number'){
+          S = Object.assign(defaults(), data);
+          save();
+          loadTheme();
+
+/* ============ LERNSPIEL ============ */
+let gameState = null;
+
+function startGame(bid, kid){
+  const b = C[bid];
+  const k = b.kapitel[kid];
+  const unters = Object.keys(k.unter);
+  // Sammle 12 Fragen aus verschiedenen Unterkapiteln (Einstieg/Grundlagen)
+  const questions = [];
+  for(let i=0; i<12; i++){
+    const uid = unters[i % unters.length];
+    const u = k.unter[uid];
+    srand(hash(bid+kid+uid+'game'+i));
+    try{
+      const q = u.gen.einstieg ? u.gen.einstieg(i) : u.gen.grundlagen(i);
+      if(q && q.t !== 'multi') questions.push({...q, uid});
+    }catch(e){}
+  }
+  if(questions.length < 5){
+    alert('Nicht genug Fragen für das Spiel verfügbar.');
+    return;
+  }
+  gameState = {
+    bid, kid,
+    questions: questions.slice(0,10),
+    index: 0,
+    score: 0,
+    correct: 0,
+    timeLeft: 90,
+    timer: null,
+    answered: false
+  };
+  renderGameQuestion();
+  gameState.timer = setInterval(()=>{
+    gameState.timeLeft--;
+    const el = document.getElementById('gameTimer');
+    if(el) el.textContent = gameState.timeLeft + 's';
+    if(gameState.timeLeft <= 0) endGame();
+  }, 1000);
+}
+
+function renderGameQuestion(){
+  if(!gameState) return;
+  const q = gameState.questions[gameState.index];
+  const total = gameState.questions.length;
+  let h = `<div class="breadcrumb" onclick="endGame(true)"><span>🏠 Zurück</span> › Lernspiel</div>`;
+  h += `<div class="q-card">`;
+  h += `<div class="game-timer" id="gameTimer">${gameState.timeLeft}s</div>`;
+  h += `<div class="game-score">Punkte: ${gameState.score} · Frage ${gameState.index+1}/${total}</div>`;
+  h += `<span class="q-type t-${q.t}">${typeLabel(q.t)}</span>`;
+  h += `<div class="q-text">${q.f}</div>`;
+  if(q.t === 'mc'){
+    h += `<div class="options" id="opts">`;
+    q.o.forEach((o,i)=>{
+      h += `<button class="opt" onclick="answerGameMC(${i},${q.r})">${o}</button>`;
+    });
+    h += `</div>`;
+  } else if(q.t === 'fill'){
+    h += `<div class="fill-row"><input type="text" id="gameFill" placeholder="Antwort..." autocomplete="off"><button class="btn btn-primary" onclick="answerGameFill()">OK</button></div>`;
+  }
+  h += `<div class="feedback" id="fb"></div>`;
+  h += `</div>`;
+  main.innerHTML = h;
+  const inp = document.getElementById('gameFill');
+  if(inp){
+    inp.focus();
+    inp.addEventListener('keydown', e => { if(e.key==='Enter') answerGameFill(); });
+  }
+}
+
+function answerGameMC(i, correct){
+  if(gameState.answered) return;
+  gameState.answered = true;
+  const ok = i === correct;
+  const opts = document.querySelectorAll('.opt');
+  opts.forEach((o,j)=>{
+    o.classList.add('dis');
+    if(j===correct) o.classList.add('correct');
+    if(j===i && !ok) o.classList.add('wrong');
+  });
+  processGameAnswer(ok);
+}
+
+function answerGameFill(){
+  if(gameState.answered) return;
+  const inp = document.getElementById('gameFill');
+  const val = inp.value || '';
+  if(!val.trim()) return;
+  gameState.answered = true;
+  const q = gameState.questions[gameState.index];
+  const ok = answersMatch(val, q.a, q.alt);
+  inp.classList.add(ok?'correct':'wrong');
+  inp.disabled = true;
+  processGameAnswer(ok);
+}
+
+function processGameAnswer(ok){
+  const fb = document.getElementById('fb');
+  if(ok){
+    gameState.correct++;
+    const points = Math.max(5, Math.floor(gameState.timeLeft / 3));
+    gameState.score += points;
+    addXP(points);
+    fb.className = 'feedback correct show';
+    fb.innerHTML = `<strong>✅ Richtig! +${points} Punkte</strong>`;
+  } else {
+    fb.className = 'feedback wrong show';
+    const q = gameState.questions[gameState.index];
+    const ans = q.t==='mc' ? q.o[q.r] : q.a;
+    fb.innerHTML = `<strong>❌ Leider falsch.</strong> Richtig: <b>${ans}</b>`;
+  }
+  setTimeout(()=>{
+    gameState.index++;
+    gameState.answered = false;
+    if(gameState.index >= gameState.questions.length) endGame();
+    else renderGameQuestion();
+  }, 900);
+}
+
+function endGame(aborted){
+  if(gameState && gameState.timer) clearInterval(gameState.timer);
+  if(aborted){
+    openKapitel(gameState.bid, gameState.kid);
+    gameState = null;
+    return;
+  }
+  const gs = gameState;
+  gameState = null;
+  let h = `<div class="game-end">`;
+  h += `<h2>🎉 Spiel beendet!</h2>`;
+  h += `<p style="font-size:1.2em;margin:15px 0">Du hast <b>${gs.correct}</b> von <b>${gs.questions.length}</b> richtig.</p>`;
+  h += `<p style="font-size:1.4em;color:#667eea;font-weight:700">${gs.score} Punkte</p>`;
+  h += `<p style="margin:10px 0">+${gs.score} XP gesammelt!</p>`;
+  h += `<div class="btn-row" style="justify-content:center">`;
+  h += `<button class="btn btn-primary" onclick="startGame('${gs.bid}','${gs.kid}')">Nochmal spielen</button>`;
+  h += `<button class="btn btn-secondary" onclick="openKapitel('${gs.bid}','${gs.kid}')">Zurück zum Kapitel</button>`;
+  h += `</div></div>`;
+  main.innerHTML = h;
+  updateStats();
+}
+
+renderHome();
+          alert('Fortschritt erfolgreich importiert!');
+        } else alert('Ungültige Datei.');
+      }catch(err){ alert('Fehler beim Lesen der Datei.'); }
+    };
+    reader.readAsText(file);
+  };
+  inp.click();
+}
+
+function showHint(){
+  const q = getTasks(S.cur.bereich,S.cur.kapitel,S.cur.unter,S.cur.level)[S.cur.index];
+  if(!q) return;
+  const box = document.getElementById('hintBox');
+  if(!box) return;
+  let text = '';
+  if(q.t === 'multi'){
+    const step = q.steps[S.cur.stepIdx];
+    text = step.regel || step.e || 'Denke an die Regel aus der Erklärung oben.';
+  } else {
+    text = q.regel || q.e || 'Schau in die Erklärung am Anfang des Themas.';
+  }
+  box.innerHTML = '<b>💡 Hinweis:</b> ' + text;
+  box.classList.add('show');
+  if(S.xp >= 3){ addXP(-3); } // kostet 3 XP
+}
+
+function simp(n,d){const g=gcd(n,d);return (n/g)+'/'+(d/g);}
+function MC(f,correct,wrongs,e,regel){const o=shuffle([correct,...wrongs]);return{t:'mc',f,o,r:o.indexOf(correct),e,regel:regel||''};}
+function F(f,a,e,regel,alt){return{t:'fill',f,a:String(a),alt:alt||[],e,regel:regel||''};}
+// Multi-Step: Array von {q, a, e, regel?}
+function MS(f,steps,e,regel){return{t:'multi',f,steps,e:e||'',regel:regel||''};}
+const _taskCache={};
+function getTasks(bid,kid,uid,level){
+  const key=bid+'.'+kid+'.'+uid+'.'+level;
+  if(_taskCache[key])return _taskCache[key];
+  const u=C[bid].kapitel[kid].unter[uid];
+  const arr=[];
+  const count=level==='multistep'?8:30;
+  for(let i=0;i<count;i++){
+    srand(hash(key+'#'+i)||(i+1));
+    try{arr.push(u.gen[level](i));}catch(err){arr.push(F('Fehler beim Generieren',0,'Fehler',''));}
+  }
+  _taskCache[key]=arr;return arr;
+}
+
+/* ============ CURRICULUM ============ */
+const C={
+b1:{name:"Zahlen und Maße",icon:"🧮",kapitel:{
+k1:{name:"Teiler und Teilbarkeit",icon:"🔢",unter:{
+u1:{name:"Teiler und Vielfache",
+e:`<h3>Teiler und Vielfache</h3>
+<p>Stell dir vor, du willst 12 Kekse gerecht auf Freunde verteilen. Ein <b>Teiler</b> von 12 ist eine Zahl, durch die 12 ohne Rest teilbar ist. Die Teiler von 12 sind also 1, 2, 3, 4, 6 und 12.</p>
+<p><b>Vielfache</b> sind das Gegenteil: Wenn du immer wieder 3 addierst, bekommst du die Vielfachen von 3: 3, 6, 9, 12, 15 …</p>
+<div class="beispiel"><b>Praxisbeispiel:</b> In einer Klasse sind 24 Schüler. In wie viele gleich große Gruppen kann man sie einteilen? Die Teiler von 24 helfen dir: 1, 2, 3, 4, 6, 8, 12, 24.</div>
+<p><b>Merksatz:</b> Teiler teilen die Zahl restlos. Vielfache entstehen durch Multiplizieren.</p>`,
+gen:{
+einstieg:(i)=>{const a=ri(2,12),b=a*ri(2,10);return MC(`Ist <b>${a}</b> ein Teiler von <b>${b}</b>?`,'Ja',['Nein'],`${b}:${a}=${b/a} → ganzzahlig.`,'Teiler: n:t ganze Zahl.');},
+grundlagen:(i)=>{const n=pick([12,18,20,24,30,36,40,48,60]);let c=0;for(let k=1;k<=n;k++)if(n%k===0)c++;return F(`Wie viele Teiler hat <b>${n}</b>?`,c,`${c} Teiler.`,'Alle 1..n prüfen.');},
+fortgeschritten:(i)=>{const a=ri(3,15);const b=a*ri(3,8);return MC(`Welche Zahl ist <b>Vielfaches von ${a}</b> und <b>Teiler von ${b}</b>?`,String(a*ri(2,Math.floor(b/a))),[String(a*10),String(a*13),String(a*17)],`${b}=${a}·${b/a}.`,'Teiler und Vielfaches prüfen.');},
+experten:(i)=>{const n=pick([36,48,60,72,84,90,96,100,120,144,180]);const m={};pf(n).forEach(p=>m[p]=(m[p]||0)+1);const cnt=Object.values(m).reduce((a,v)=>a*(v+1),1);return F(`Wie viele Teiler hat <b>${n}</b>? (${pfStr(n)})`,cnt,`Teileranzahl = ${Object.values(m).map(v=>'('+v+'+1)').join('·')} = ${cnt}.`,'Teileranzahl = Produkt der (Exponent+1).');},
+multistep:(i)=>{const n=pick([24,30,36,40,42,48]);return MS(`Bestimme alle Teiler von <b>${n}</b> in mehreren Schritten.`,
+[{q:`Primfaktorzerlegung von ${n} (Form 2^a·3^b·5^c):`,a:pfStr(n),e:`${n} = ${pfStr(n)}`},
+{q:'Wie viele Teiler hat die Zahl (Produkt der Exponent+1)?',a:String(Object.values((()=>{const m={};pf(n).forEach(p=>m[p]=(m[p]||0)+1);return m;})()).reduce((a,v)=>a*(v+1),1)),e:`${Object.values((()=>{const m={};pf(n).forEach(p=>m[p]=(m[p]||0)+1);return m;})()).map(v=>'('+v+'+1)').join('·')}`},
+{q:'Größter echter Teiler (ohne die Zahl selbst):',a:String((()=>{for(let k=n-1;k>=1;k--)if(n%k===0)return k;})()),e:'Zweitgrößter Teiler.'}],
+`Alle Teiler von ${n} sind durch Primfaktorzerlegung systematisch bestimmbar.`,'Teileranzahl = Produkt der (Exponent+1).');}
+}},
+u2:{name:"Teilbarkeitsregeln",
+e:`<h3>Teilbarkeitsregeln</h3>
+<p>Mit den Teilbarkeitsregeln kannst du schnell prüfen, ob eine Zahl durch eine andere teilbar ist – ohne lang zu rechnen!</p>
+<ul style="margin:10px 0 10px 20px;line-height:1.7">
+<li><b>2:</b> Letzte Ziffer gerade (0,2,4,6,8)</li>
+<li><b>3:</b> Quersumme durch 3 teilbar (z. B. 123 → 1+2+3=6)</li>
+<li><b>4:</b> Letzte zwei Ziffern durch 4 teilbar</li>
+<li><b>5:</b> Endet auf 0 oder 5</li>
+<li><b>6:</b> Teilbar durch 2 <i>und</i> durch 3</li>
+<li><b>9:</b> Quersumme durch 9 teilbar</li>
+<li><b>10:</b> Endet auf 0</li>
+</ul>
+<div class="beispiel"><b>Alltag:</b> Du willst 48 Bonbons auf 6 Freunde verteilen. Ist 48 durch 6 teilbar? Ja, weil es gerade ist (2) und die Quersumme 12 durch 3 geht.</div>`,
+gen:{
+einstieg:(i)=>{const n=ri(50,999),r=pick([2,5,10]);const ok=n%r===0;return MC(`Ist <b>${n}</b> durch <b>${r}</b> teilbar?`,ok?'Ja':'Nein',[ok?'Nein':'Ja'],`Endziffer ${n%10}: ${ok?'ja':'nein'}.`,'Endziffernregel.');},
+grundlagen:(i)=>{const n=ri(100,999);const ok=n%3===0;return F(`Ist <b>${n}</b> durch 3 teilbar? (ja/nein)`,ok?'ja':'nein',`Quersumme ${String(n).split('').join('+')}=${String(n).split('').reduce((a,d)=>a+ +d,0)}.`,'Quersummenregel.');},
+fortgeschritten:(i)=>{const n=ri(200,9999),r=pick([4,8]);const test=r===4?+String(n).slice(-2):+String(n).slice(-3);const ok=n%r===0;return MC(`Ist <b>${n}</b> durch <b>${r}</b> teilbar?`,ok?'Ja':'Nein',[ok?'Nein':'Ja'],`Letzte ${r===4?2:3} Ziffern: ${test}.`,'Endziffern prüfen.');},
+experten:(i)=>{const n=ri(120,9996);const ok=n%6===0;return MC(`Ist <b>${n}</b> durch <b>6</b> teilbar?`,ok?'Ja':'Nein',[ok?'Nein':'Ja'],`Gerade? ${n%2===0}. QS = ${String(n).split('').reduce((a,d)=>a+ +d,0)}.`,'Teilbar durch 6 = 2 UND 3.');},
+multistep:(i)=>{const n=ri(1000,9999);return MS(`Prüfe die Teilbarkeit von <b>${n}</b> systematisch.`,
+[{q:`Quersumme von ${n}:`,a:String(String(n).split('').reduce((a,d)=>a+ +d,0)),e:`${String(n).split('').join('+')} = ${String(n).split('').reduce((a,d)=>a+ +d,0)}`},
+{q:`Ist ${n} durch 3 teilbar? (ja/nein)`,a:n%3===0?'ja':'nein',e:`QS ${String(n).split('').reduce((a,d)=>a+ +d,0)} ${n%3===0?'':''} :3`},
+{q:`Letzte zwei Ziffern: ${String(n).slice(-2)} – ist ${n} durch 4 teilbar? (ja/nein)`,a:n%4===0?'ja':'nein',e:`${+String(n).slice(-2)} :4`},
+{q:`Ist ${n} durch 9 teilbar? (ja/nein)`,a:n%9===0?'ja':'nein',e:`QS = ${String(n).split('').reduce((a,d)=>a+ +d,0)}`}],
+`Teilbarkeit mehrstufig geprüft.`,'Mehrere Regeln kombiniert anwenden.');}
+}},
+u3:{name:"Primzahlen und Primfaktorzerlegung",
+e:`<h3>Primzahlen und Primfaktorzerlegung</h3>
+<p>Eine <b>Primzahl</b> hat genau zwei Teiler: die 1 und sich selbst. Beispiele: 2, 3, 5, 7, 11, 13, 17 … Die 1 ist <b>keine</b> Primzahl (nur ein Teiler). Die 2 ist die einzige gerade Primzahl.</p>
+<p>Jede Zahl größer als 1 lässt sich eindeutig in Primzahlen zerlegen. Das nennt man <b>Primfaktorzerlegung</b>.</p>
+<div class="beispiel"><b>Beispiel:</b> 36 = 2 · 2 · 3 · 3 = 2² · 3²<br>
+So kannst du später schnell Teiler zählen oder den ggT finden.</div>
+<p><b>Tipp:</b> Fang immer mit der kleinsten Primzahl an (2, dann 3, 5 …).</p>`,
+gen:{
+einstieg:(i)=>{const n=pick([2,3,5,7,11,13,17,19,4,6,8,9,10,12,15,21,25,27,35,49,51,91]);const ok=isPrime(n);return MC(`Ist <b>${n}</b> eine Primzahl?`,ok?'Ja':'Nein',[ok?'Nein':'Ja'],ok?`Nur Teiler 1 und ${n}.`:`${n} = ${pfStr(n)}.`,'Genau zwei Teiler = prim.');},
+grundlagen:(i)=>{const n=ri(10,60);return F(`Primfaktorzerlegung von <b>${n}</b>:`,pfStr(n),`${n} = ${pf(n).join('·')}.`,'Durch kleinste Primzahlen teilen.');},
+fortgeschritten:(i)=>{const n=pick([120,180,210,240,300,360,420,504,720]);return F(`Primfaktorzerlegung von <b>${n}</b>:`,pfStr(n),`${n} = ${pf(n).join('·')} = ${pfStr(n)}.`,'Schrittweise zerlegen.');},
+experten:(i)=>{const a=ri(10,50),b=a+ri(20,50);const primes=[];for(let k=a;k<=b;k++)if(isPrime(k))primes.push(k);return F(`Wie viele Primzahlen zwischen <b>${a}</b> und <b>${b}</b>?`,primes.length,`${primes.join(', ')}`,'Primzahlen einzeln prüfen.');},
+multistep:(i)=>{const n=pick([72,84,96,108,120,144,180,240]);return MS(`Zerlege <b>${n}</b> schrittweise in Primfaktoren.`,
+[{q:`Erste Division durch kleinste Primzahl: ${n} : 2 = ?`,a:String(n/2),e:`${n}:2 = ${n/2}`},
+{q:`Nächster Schritt: ${n/2} : 2 = ?`,a:n%4===0?String(n/4):String(n/2),e:`${n/2}:2 = ${n%4===0?n/4:n/2}`},
+{q:`Vollständige Primfaktorzerlegung (Form 2^a·3^b·5^c):`,a:pfStr(n),e:`${n} = ${pf(n).join('·')}`}],
+`Primfaktorzerlegung durch wiederholtes Teilen.`,'Durch kleinste Primzahlen teilen.');}
+}},
+u4:{name:"ggT und kgV",
+e:`<h3>ggT und kgV</h3>
+<p>Der <b>größter gemeinsamer Teiler (ggT)</b> ist die größte Zahl, die beide Zahlen restlos teilt. Der <b>kleinste gemeinsame Vielfache (kgV)</b> ist die kleinste Zahl, die von beiden Zahlen geteilt wird.</p>
+<p>Am einfachsten geht es über die Primfaktorzerlegung:</p>
+<ul style="margin:8px 0 8px 20px">
+<li>ggT: gemeinsame Primfaktoren mit der <b>kleinsten</b> Hochzahl</li>
+<li>kgV: alle Primfaktoren mit der <b>größten</b> Hochzahl</li>
+</ul>
+<div class="beispiel"><b>Praxis:</b> Zwei Busse fahren alle 12 und 18 Minuten. Wann treffen sie sich wieder am Start? Das ist das kgV von 12 und 18 = 36 Minuten.</div>`,
+gen:{
+einstieg:(i)=>{const a=ri(4,20),b=ri(4,20);return F(`ggT(${a}, ${b}) = ?`,gcd(a,b),`ggT = ${gcd(a,b)}.`,'Gemeinsame Teiler.');},
+grundlagen:(i)=>{const a=ri(3,15),b=ri(3,15);return F(`kgV(${a}, ${b}) = ?`,lcm(a,b),`kgV = ${lcm(a,b)}.`,'kgV = a·b/ggT.');},
+fortgeschritten:(i)=>{const a=ri(12,60),b=ri(12,60);return F(`ggT(${a}, ${b}) = ?`,gcd(a,b),`ggT = ${gcd(a,b)}.`,'Primfaktorzerlegung.');},
+experten:(i)=>{const n=[ri(4,20),ri(4,20),ri(4,20)];return F(`kgV(${n.join(', ')}) = ?`,lcm(lcm(n[0],n[1]),n[2]),`kgV = ${lcm(lcm(n[0],n[1]),n[2])}.`,'Schrittweise kgV.');},
+multistep:(i)=>{const a=pick([24,36,48,60,72]),b=pick([30,40,45,54,84]);return MS(`Berechne <b>ggT</b> und <b>kgV</b> von ${a} und ${b} über Primfaktorzerlegung.`,
+[{q:`Primfaktorzerlegung von ${a}:`,a:pfStr(a),e:`${a} = ${pf(a).join('·')}`},
+{q:`Primfaktorzerlegung von ${b}:`,a:pfStr(b),e:`${b} = ${pf(b).join('·')}`},
+{q:`ggT(${a}, ${b}) = ?`,a:String(gcd(a,b)),e:`Gemeinsame Primfaktoren kleinster Hochzahl.`},
+{q:`kgV(${a}, ${b}) = ?`,a:String(lcm(a,b)),e:`Alle Primfaktoren größter Hochzahl.`}],
+`ggT und kgV systematisch über Primfaktorzerlegung.`,'ggT: gemeinsame, kgV: alle Primfaktoren.');}
+}}
+}},
+k2:{name:"Brüche und Dezimalzahlen",icon:"🍕",unter:{
+u1:{name:"Brüche darstellen",
+e:`<h3>Brüche darstellen</h3>
+<p>Ein Bruch beschreibt einen Teil eines Ganzen. Oben steht der <b>Zähler</b> (wie viele Teile du nimmst), unten der <b>Nenner</b> (in wie viele Teile das Ganze geteilt ist).</p>
+<ul style="margin:8px 0 8px 20px">
+<li><b>Echter Bruch:</b> Zähler kleiner als Nenner (z. B. 3/4)</li>
+<li><b>Unechter Bruch:</b> Zähler größer oder gleich Nenner (z. B. 5/3)</li>
+<li><b>Gemischte Zahl:</b> Ganze + Bruch (z. B. 1 2/3)</li>
+</ul>
+<div class="beispiel"><b>Alltag:</b> Eine Pizza ist in 8 Stücke geteilt. Du isst 3 Stück → 3/8 der Pizza.</div>
+<p>Um eine gemischte Zahl in einen unechten Bruch zu verwandeln: Ganze · Nenner + Zähler.</p>`,
+gen:{
+einstieg:(i)=>{return MC(`Wie heißt der obere Teil eines Bruchs?`,'Zähler',['Nenner','Divisor','Quotient'],'Zähler oben, Nenner unten.','Zähler/Nenner.');},
+grundlagen:(i)=>{const w=ri(1,5),z=ri(1,7),n=ri(z+1,10);return F(`Schreibe <b>${w} ${z}/${n}</b> als unechten Bruch:`,(w*n+z)+'/'+n,`${w}·${n}+${z} = ${w*n+z}.`,'Ganze · Nenner + Zähler.');},
+fortgeschritten:(i)=>{const n=ri(2,9),w=ri(1,4),z=ri(1,n-1);const u=w*n+z;return F(`Schreibe <b>${u}/${n}</b> als gemischte Zahl (w z/n):`,w+' '+z+'/'+n,`${u}:${n} = ${w} R ${z}.`,'Zähler durch Nenner.');},
+experten:(i)=>{const tot=pick([12,20,24,30,36,40,60]);const num=ri(1,tot-1);return F(`Behälter ${tot} L. ${num}/${tot} entnommen, dann ${num/gcd(num,tot)}/${tot/gcd(num,tot)} zurück. Wie viele L noch drin?`,tot-num+num/gcd(num,tot),`${tot}−${num}+${num/gcd(num,tot)} = ${tot-num+num/gcd(num,tot)} L.`,'In Liter umrechnen.');},
+multistep:(i)=>{const n=pick([12,18,24,30,36]);return MS(`Bruch-Aufgabe mit dem Ganzen ${n}.`,
+[{q:`Wie viele Teile bleiben übrig, wenn 1/${n/gcd(6,n)} weggenommen wird? (Zähler bei Nenner ${n})`,a:String(n-n/gcd(6,n)),e:`${n} − ${n/gcd(6,n)} = ${n-n/gcd(6,n)}`},
+{q:`Nenne den entstandenen Bruch in Grundform (a/b):`,a:simp(n-n/gcd(6,n),n),e:`${n-n/gcd(6,n)}/${n} = ${simp(n-n/gcd(6,n),n)}`},
+{q:`Jetzt nochmal die Hälfte davon weg. Verbleibender Bruch in Grundform (a/b):`,a:simp(n-n/gcd(6,n),2*n),e:`${simp(n-n/gcd(6,n),n)} · 1/2 = ${simp(n-n/gcd(6,n),2*n)}`}],
+`Bruchteile des Ganzen mehrstufig.`,'Ganzes als n/n darstellen.');}
+}},
+u2:{name:"Erweitern und Kürzen",
+e:`<h3>Erweitern und Kürzen</h3>
+<p><b>Erweitern</b> bedeutet: Zähler und Nenner mit derselben Zahl multiplizieren. Der Wert des Bruchs bleibt gleich – du machst nur mehr Teile daraus.</p>
+<p><b>Kürzen</b> ist das Gegenteil: Du teilst Zähler und Nenner durch dieselbe Zahl (am besten den ggT). So bekommst du den Bruch in der einfachsten Form.</p>
+<div class="beispiel"><b>Beispiel:</b> 2/4 erweitern mit 2 → 4/8. Oder 6/9 kürzen durch 3 → 2/3.<br>
+Beide Brüche bedeuten dasselbe: die Hälfte bzw. zwei Drittel.</div>
+<p><b>Tipp:</b> Immer durch den größten gemeinsamen Teiler kürzen, dann bist du fertig.</p>`,
+gen:{
+einstieg:(i)=>{const z=ri(1,5),n=ri(z+1,9),k=ri(2,6);return F(`Erweitere <b>${z}/${n}</b> mit ${k}: ?/${n*k}`,z*k,`${z}·${k}=${z*k}.`,'Gleiche Zahl oben und unten.');},
+grundlagen:(i)=>{const k=ri(2,6),z=ri(1,5)*k,n=ri(z/k+1,9)*k;return F(`Kürze <b>${z}/${n}</b> mit ${k}:`,(z/k)+'/'+(n/k),`${z}:${k} / ${n}:${k}.`,'Durch gleiche Zahl teilen.');},
+fortgeschritten:(i)=>{const z=ri(12,60),n=ri(12,60);return F(`Kürze <b>${z}/${n}</b> vollständig:`,simp(z,n),`ggT = ${gcd(z,n)}.`,'Durch ggT teilen.');},
+experten:(i)=>{const a=[ri(1,5),ri(2,8)],b=[a[0]*ri(2,5),a[1]*ri(2,5)];return MC(`Welcher Bruch ist gleich <b>${a[0]}/${a[1]}</b>?`,`${b[0]}/${b[1]}`,[`${a[0]+1}/${a[1]}`,`${a[0]}/${a[1]+1}`,`${a[0]+2}/${a[1]+1}`],`Erweitert mit ${b[0]/a[0]}.`,'Erweitern ändert Wert nicht.');},
+multistep:(i)=>{const z=pick([24,36,48,60]),n=pick([36,54,72,90,120]);return MS(`Kürze <b>${z}/${n}</b> schrittweise.`,
+[{q:`ggT(${z}, ${n}) = ?`,a:String(gcd(z,n)),e:`ggT = ${gcd(z,n)}`},
+{q:`Zähler durch ggT: ${z} : ${gcd(z,n)} = ?`,a:String(z/gcd(z,n)),e:`${z/gcd(z,n)}`},
+{q:`Nenner durch ggT: ${n} : ${gcd(z,n)} = ?`,a:String(n/gcd(z,n)),e:`${n/gcd(z,n)}`},
+{q:`Ergebnis in Grundform (a/b):`,a:simp(z,n),e:`${z}/${n} = ${simp(z,n)}`}],
+`Vollständiges Kürzen über ggT.`,'Durch ggT teilen.');}
+}},
+u3:{name:"Dezimalzahlen und periodische Dezimalzahlen",
+e:`<h3>Dezimalzahlen und periodische Dezimalzahlen</h3>
+<p>Brüche mit Nenner 10, 100 oder 1000 kannst du leicht als Dezimalzahl schreiben: 3/10 = 0,3 · 25/100 = 0,25.</p>
+<p>Manche Brüche enden nie (periodisch): 1/3 = 0,333… = 0,3̄ · 1/6 = 0,1666… = 0,16̄.</p>
+<div class="beispiel"><b>Praxis:</b> 1/4 Liter Milch ist 0,25 Liter. Ein Drittel eines Kuchens ist ungefähr 0,33 oder genau 0,3̄.</div>
+<p>Endliche Dezimalzahlen entstehen, wenn der Nenner nur aus den Primfaktoren 2 und/oder 5 besteht.</p>`,
+gen:{
+einstieg:(i)=>{const z=ri(1,9),p=pick([10,100,1000]);return F(`Schreibe <b>${z}/${p}</b> als Dezimalzahl:`,(z/p).toString().replace('.',','),`${z/p}.`,'Nenner 10/100/1000.');},
+grundlagen:(i)=>{const n=pick([2,4,5,8,10,16,20,25]),z=ri(1,n-1);return F(`Schreibe <b>${z}/${n}</b> als Dezimalzahl:`,(z/n).toString().replace('.',','),`${z}:${n} = ${z/n}.`,'Endliche Dezimalzahl.');},
+fortgeschritten:(i)=>{const d=pick([0.1,0.2,0.25,0.4,0.5,0.6,0.75,0.8]);const z=Math.round(d*100);return F(`Schreibe <b>${d.toString().replace('.',',')}</b> als vollständig gekürzten Bruch:`,simp(z,100),`${z}/100 = ${simp(z,100)}.`,'Hundertstel → kürzen.');},
+experten:(i)=>{const d=pick([1,2,3,4,5,6,7,8]);const z=ri(1,d-1);return MC(`Welche Dezimaldarstellung hat <b>${z}/${d}</b>?`,(z/d).toFixed(4).slice(0,-1)+'…',[(z/d).toFixed(3),(z/d+0.01).toFixed(3),(z/d-0.001).toFixed(4)],`${z}:${d} = ${(z/d).toFixed(6)}…`,'Periodisch wenn Nenner ≠ 2,5.');},
+multistep:(i)=>{const z=ri(1,7),n=pick([8,16,20,25]);return MS(`Wandle <b>${z}/${n}</b> in eine Dezimalzahl um.`,
+[{q:`Erweitere auf Nenner 1000: ${z}/${n} = ?/1000`,a:String(z*1000/n),e:`${z}·${1000/n} = ${z*1000/n}`},
+{q:`Schreibe als Dezimalzahl:`,a:(z/n).toString().replace('.',','),e:`${z*1000/n}/1000 = ${z/n}`},
+{q:`Als Prozent (Zahl ohne %-Zeichen):`,a:String(z/n*100),e:`${z/n} · 100 = ${z/n*100} %`}],
+`Umwandlung Bruch → Dezimal → Prozent.`,'Zähler durch Nenner.');}
+}},
+u4:{name:"Umwandeln Brüche ↔ Dezimalzahlen",
+e:`<h3>Brüche ↔ Dezimalzahlen umwandeln</h3>
+<p><b>Bruch in Dezimalzahl:</b> Einfach Zähler durch Nenner teilen.<br>
+<b>Dezimalzahl in Bruch:</b> Schreibe die Zahl als Bruch mit 10, 100 oder 1000 im Nenner und kürze dann.</p>
+<div class="beispiel"><b>Beispiele:</b><br>
+3/8 = 3 ÷ 8 = 0,375<br>
+0,6 = 6/10 = 3/5<br>
+0,25 = 25/100 = 1/4</div>
+<p>Periodische Dezimalzahlen wie 0,3̄ werden zu 1/3 oder 3/9 (dann kürzen).</p>`,
+gen:{
+einstieg:(i)=>{const z=ri(1,9),n=ri(z+1,10);return F(`Schreibe <b>${z}/${n}</b> als Dezimalzahl (auf 4 Stellen):`,(z/n).toFixed(4).replace('.',','),`${(z/n).toFixed(6)}.`,'Zähler durch Nenner.');},
+grundlagen:(i)=>{const d=pick([0.2,0.4,0.5,0.6,0.8,0.25,0.75]);const z=Math.round(d*100);return F(`Schreibe <b>${d.toString().replace('.',',')}</b> als Bruch (a/b):`,simp(z,100),`${z}/100 = ${simp(z,100)}.`,'Hundertstel → kürzen.');},
+fortgeschritten:(i)=>{const z=ri(1,7),n=pick([8,16,20,25,40]);return F(`Schreibe <b>${z}/${n}</b> als Dezimalzahl:`,(z/n).toString().replace('.',','),`${z/n}.`,'Erweitern auf 10er-Nenner.');},
+experten:(i)=>{const d=pick([3,6,1,2,5,8,9]);return F(`Schreibe <b>0,${d}̄</b> als Bruch (gekürzt):`,simp(d,9),`0,${d}̄ = ${d}/9 = ${simp(d,9)}.`,'0,ā = a/9.');},
+multistep:(i)=>{const d=pick([0.375,0.625,0.875,0.15,0.45]);const n=1000;const num=Math.round(d*n);return MS(`Wandle <b>${d.toString().replace('.',',')}</b> in einen Bruch um.`,
+[{q:`Als Dezimalbruch / 1000: ${Math.round(d*n)}/1000`,a:'ok',e:`${num}/1000`},
+{q:`ggT(${num}, 1000) = ?`,a:String(gcd(num,1000)),e:`ggT = ${gcd(num,1000)}`},
+{q:`Gekürzter Bruch (a/b):`,a:simp(num,1000),e:`${simp(num,1000)}`}],
+`Dezimal → Bruch systematisch.`,'Nenner 10/100/1000, dann kürzen.');}
+}}
+}},
+k3:{name:"Rechnen mit Brüchen",icon:"➗",unter:{
+u1:{name:"Addition und Subtraktion",
+e:`<h3>Addition und Subtraktion von Brüchen</h3>
+<p>Haben die Brüche den <b>gleichen Nenner</b>, rechnest du einfach mit den Zählern und behältst den Nenner.</p>
+<p>Bei <b>verschiedenen Nennern</b> musst du zuerst einen gemeinsamen Nenner finden – am besten das kgV der Nenner. Dann erweiterst du beide Brüche und rechnest.</p>
+<div class="beispiel"><b>Beispiel:</b> 1/3 + 1/6<br>
+kgV von 3 und 6 ist 6. 1/3 = 2/6. Also 2/6 + 1/6 = 3/6 = 1/2.</div>
+<p><b>Alltag:</b> Du isst 1/4 einer Pizza und dein Freund 1/6. Zusammen habt ihr wie viel gegessen? Erst gleichnamig machen!</p>`,
+gen:{
+einstieg:(i)=>{const n=ri(4,12),z1=ri(1,n-3),z2=ri(1,n-z1-1);return F(`<b>${z1}/${n} + ${z2}/${n}</b> = ? (a/b, gekürzt)`,simp(z1+z2,n),`${z1+z2}/${n} = ${simp(z1+z2,n)}.`,'Gleicher Nenner.');},
+grundlagen:(i)=>{const n1=pick([2,3,4,5]),n2=pick([2,3,4,5,6]);const d=lcm(n1,n2);const z1=ri(1,n1-1),z2=ri(1,n2-1);return F(`<b>${z1}/${n1} + ${z2}/${n2}</b> = ? (a/b)`,simp(z1*d/n1+z2*d/n2,d),`kgV = ${d}. ${z1*d/n1+z2*d/n2}/${d} = ${simp(z1*d/n1+z2*d/n2,d)}.`,'Erst gleichnamig.');},
+fortgeschritten:(i)=>{const n=[ri(2,6),ri(2,6),ri(2,8)].sort();const d=lcm(lcm(n[0],n[1]),n[2]);const z=[ri(1,n[0]-1),ri(1,n[1]-1),ri(1,n[2]-1)];return F(`<b>${z[0]}/${n[0]} + ${z[1]}/${n[1]} + ${z[2]}/${n[2]}</b> = ? (a/b)`,simp(z[0]*d/n[0]+z[1]*d/n[1]+z[2]*d/n[2],d),`kgV = ${d}.`,'kgV aller drei Nenner.');},
+experten:(i)=>{const n=[ri(2,6),ri(2,6),ri(2,6)];const d=lcm(lcm(n[0],n[1]),n[2]);const z=[ri(1,n[0]-1),ri(1,n[1]-1),ri(1,n[2]-1)];return F(`<b>${z[0]}/${n[0]} − ${z[1]}/${n[1]} + ${z[2]}/${n[2]}</b> = ? (a/b)`,simp(z[0]*d/n[0]-z[1]*d/n[1]+z[2]*d/n[2],d),`kgV = ${d}.`,'Gleichnamig, dann rechnen.');},
+multistep:(i)=>{const n1=pick([2,3,4]),n2=pick([3,4,5,6]);const d=lcm(n1,n2);const z1=ri(1,n1-1),z2=ri(1,n2-1);const s=z1*d/n1+z2*d/n2;return MS(`Berechne <b>${z1}/${n1} + ${z2}/${n2}</b> schrittweise.`,
+[{q:`kgV(${n1}, ${n2}) = ?`,a:String(d),e:`kgV = ${d}`},
+{q:`${z1}/${n1} = ?/${d}`,a:String(z1*d/n1),e:`${z1}·${d/n1} = ${z1*d/n1}`},
+{q:`${z2}/${n2} = ?/${d}`,a:String(z2*d/n2),e:`${z2}·${d/n2} = ${z2*d/n2}`},
+{q:`Summe (a/b, gekürzt):`,a:simp(s,d),e:`${s}/${d} = ${simp(s,d)}`}],
+`Brüche mit verschiedenen Nennern addieren.`,'Erst kgV, dann addieren.');}
+}},
+u2:{name:"Multiplikation und Division",
+e:`<h3>Multiplikation und Division von Brüchen</h3>
+<p><b>Multiplizieren:</b> Zähler mal Zähler, Nenner mal Nenner. Danach möglichst kürzen.</p>
+<p><b>Dividieren:</b> Mit dem Kehrwert multiplizieren (Zähler und Nenner des zweiten Bruchs vertauschen).</p>
+<div class="beispiel"><b>Beispiel:</b> 2/3 · 3/4 = 6/12 = 1/2<br>
+2/3 : 3/4 = 2/3 · 4/3 = 8/9</div>
+<p><b>Tipp:</b> Oft kannst du schon vor dem Multiplizieren kreuzweise kürzen – das macht die Rechnung kleiner.</p>`,
+gen:{
+einstieg:(i)=>{const z1=ri(1,5),n1=ri(2,6),z2=ri(1,5),n2=ri(2,6);return F(`<b>${z1}/${n1} · ${z2}/${n2}</b> = ? (a/b)`,simp(z1*z2,n1*n2),`${z1*z2}/${n1*n2} = ${simp(z1*z2,n1*n2)}.`,'Zähler·Zähler, Nenner·Nenner.');},
+grundlagen:(i)=>{const z1=ri(2,8),n1=ri(2,8),z2=ri(2,8),n2=ri(2,8);return F(`<b>${z1}/${n1} · ${z2}/${n2}</b> = ? (a/b)`,simp(z1*z2,n1*n2),`${simp(z1*z2,n1*n2)}.`,'Kreuzweise kürzen.');},
+fortgeschritten:(i)=>{const z1=ri(1,5),n1=ri(2,7),z2=ri(1,5),n2=ri(2,7);return F(`<b>${z1}/${n1} : ${z2}/${n2}</b> = ? (a/b)`,simp(z1*n2,n1*z2),`${z1}/${n1}·${n2}/${z2} = ${simp(z1*n2,n1*z2)}.`,'Mit Kehrwert multiplizieren.');},
+experten:(i)=>{const z1=ri(2,9),n1=ri(2,9),z2=ri(2,9),n2=ri(2,9);return F(`<b>(${z1}/${n1}) : (${z2}/${n2})</b> = ? (a/b)`,simp(z1*n2,n1*z2),`${simp(z1*n2,n1*z2)}.`,'Doppelbruch: außen·außen, innen·innen.');},
+multistep:(i)=>{const z1=ri(2,5),n1=ri(3,7),z2=ri(2,5),n2=ri(3,7);return MS(`Berechne <b>(${z1}/${n1}) · (${z2}/${n2})</b> schrittweise.`,
+[{q:`Zähler-Produkt: ${z1} · ${z2} = ?`,a:String(z1*z2),e:`${z1*z2}`},
+{q:`Nenner-Produkt: ${n1} · ${n2} = ?`,a:String(n1*n2),e:`${n1*n2}`},
+{q:`Rohprodukt (a/b):`,a:(z1*z2)+'/'+(n1*n2),e:`${z1*z2}/${n1*n2}`},
+{q:`Vollständig gekürzt (a/b):`,a:simp(z1*z2,n1*n2),e:`${simp(z1*z2,n1*n2)}`}],
+`Multiplikation von Brüchen Schritt für Schritt.`,'Zähler·Zähler, Nenner·Nenner.');}
+}},
+u3:{name:"Gemischte Aufgaben",
+e:`<h3>Gemischte Aufgaben mit Brüchen</h3>
+<p>Achte auf die Rechenregeln: <b>Klammer zuerst</b>, dann Punkt vor Strich (· und : vor + und −).</p>
+<div class="beispiel"><b>Beispiel:</b> (1/2 + 1/4) · 2<br>
+Zuerst Klammer: 1/2 + 1/4 = 3/4. Dann 3/4 · 2 = 6/4 = 3/2 = 1 1/2.</div>
+<p>Schreibe dir die Zwischenschritte auf – dann verlierst du nicht den Überblick.</p>`,
+gen:{
+einstieg:(i)=>{const n=ri(2,6),z1=ri(1,n-1),z2=ri(1,n-1),z3=ri(1,4);return F(`<b>${z1}/${n} + ${z2}/${n} · ${z3}</b> = ? (a/b)`,simp(z1+z2*z3,n),`${z2}/${n}·${z3} = ${z2*z3}/${n}. ${simp(z1+z2*z3,n)}.`,'Punkt vor Strich.');},
+grundlagen:(i)=>{const n1=ri(2,5),n2=ri(2,5),k=ri(2,5);const d=lcm(n1,n2);const sum=simp(ri(1,n1-1)*d/n1+ri(1,n2-1)*d/n2,d);const [za,na]=sum.split('/').map(Number);return F(`<b>(${sum}) · ${k}</b> = ? (a/b)`,simp(za*k,na),`${simp(za*k,na)}.`,'Klammer zuerst.');},
+fortgeschritten:(i)=>{const n1=ri(2,6),n2=ri(2,6),z1=ri(1,n1-1),z2=ri(1,n2-1);const d=lcm(n1,n2);const diff=simp(z1*d/n1-z2*d/n2,d);const [za,na]=diff.split('/').map(Number);const k=ri(2,5);return F(`<b>(${z1}/${n1} − ${z2}/${n2}) · ${k}</b> = ? (a/b)`,simp(za*k,na),`${diff} · ${k} = ${simp(za*k,na)}.`,'Klammer zuerst.');},
+experten:(i)=>{const z1=ri(1,4),n1=ri(2,5),z2=ri(1,4),n2=ri(2,5),k=ri(2,4);const sum=simp(z1*n2+z2*n1,n1*n2);const [zs,ns]=sum.split('/').map(Number);return F(`<b>(${z1}/${n1} + ${z2}/${n2}) : ${k}</b> = ? (a/b)`,simp(zs,ns*k),`${sum} : ${k} = ${simp(zs,ns*k)}.`,'Klammer zuerst, dann Kehrwert.');},
+multistep:(i)=>{const n1=ri(2,5),n2=ri(2,5),z1=ri(1,n1-1),z2=ri(1,n2-1);const d=lcm(n1,n2);const s=z1*d/n1+z2*d/n2;return MS(`Berechne <b>(${z1}/${n1} + ${z2}/${n2}) · 2</b> Schritt für Schritt.`,
+[{q:`kgV(${n1},${n2}) = ?`,a:String(d),e:`kgV = ${d}`},
+{q:`Summe in ${d}-teln: Zähler = ?`,a:String(s),e:`${z1*d/n1} + ${z2*d/n2} = ${s}`},
+{q:`Summe als Bruch gekürzt:`,a:simp(s,d),e:`${simp(s,d)}`},
+{q:`Mal 2 (a/b):`,a:simp(2*s,d),e:`${simp(s,d)} · 2 = ${simp(2*s,d)}`}],
+`Gemischt: erst Klammer, dann Multiplikation.`,'Punkt vor Strich.');}
+}}
+}},
+k4:{name:"Prozent- und Promillerechnung",icon:"％",unter:{
+u1:{name:"Prozentbegriff und relative Häufigkeit",
+e:`<h3>Prozent und relative Häufigkeit</h3>
+<p><b>1 % bedeutet 1 von 100</b> oder 1/100 oder 0,01. Prozent ist also einfach ein Hundertstel.</p>
+<p>Die <b>relative Häufigkeit</b> sagt dir, welchen Anteil etwas vom Ganzen ausmacht: Teil ÷ Ganzes, dann mal 100 für Prozent.</p>
+<div class="beispiel"><b>Beispiel:</b> In einer Klasse mit 25 Schülern sind 10 Mädchen.<br>
+10/25 = 0,4 = 40 %. Also sind 40 % der Klasse Mädchen.</div>
+<p>Im Alltag siehst du Prozent überall: Rabatte, Noten, Umfragen, Batterieanzeige …</p>`,
+gen:{
+einstieg:(i)=>{const p=pick([5,10,20,25,40,50,60,75,80]);return MC(`Was ist <b>${p} %</b> als Bruch?`,simp(p,100),[simp(p,10),simp(p+5,100),simp(p,1000)],`${p}/100 = ${simp(p,100)}.`,'Prozent = Hundertstel.');},
+grundlagen:(i)=>{const z=ri(1,9),n=ri(z+1,10);return F(`Schreibe <b>${z}/${n}</b> als Prozent (gerundet):`,Math.round(z/n*100),`${(z/n*100).toFixed(2)} %.`,'Bruch → Dezimal → %.');},
+fortgeschritten:(i)=>{const tot=pick([20,25,30,40,50]),teil=ri(1,tot-1);return F(`In einer Gruppe von ${tot} sind ${teil} Linkshänder. % (gerundet):`,Math.round(teil/tot*100),`${(teil/tot*100).toFixed(1)} %.`,'Rel. Häufigkeit · 100.');},
+experten:(i)=>{const g=pick([200,250,300,400,500]),p=pick([15,18,22,35,42,48]);const w=Math.round(g*p/100);return F(`Von ${g} fahren ${w} mit Bus. % (gerundet):`,Math.round(w/g*100),`${(w/g*100).toFixed(2)} %.`,'p = W/G · 100.');},
+multistep:(i)=>{const tot=pick([20,25,30,40]),teil=ri(3,tot-2);return MS(`Eine Klasse mit ${tot} Kindern, davon ${teil} Mädchen.`,
+[{q:`Anteil der Mädchen als Bruch gekürzt (a/b):`,a:simp(teil,tot),e:`${teil}/${tot} = ${simp(teil,tot)}`},
+{q:`Dezimalwert (auf 3 Stellen):`,a:(teil/tot).toFixed(3).replace('.',','),e:`${(teil/tot).toFixed(3)}`},
+{q:`In Prozent (gerundet, Zahl ohne %):`,a:String(Math.round(teil/tot*100)),e:`${(teil/tot*100).toFixed(1)} %`},
+{q:`Anteil der Buben in Prozent (gerundet):`,a:String(Math.round((tot-teil)/tot*100)),e:`${((tot-teil)/tot*100).toFixed(1)} %`}],
+`Relative Häufigkeit in Bruch, Dezimal und Prozent.`,'Anteil = Teil/Ganzes.');}
+}},
+u2:{name:"Prozentwert, Grundwert, Prozentsatz",
+e:`<h3>Prozentwert, Grundwert und Prozentsatz</h3>
+<p>Es gibt drei Größen, die zusammenhängen:</p>
+<ul style="margin:8px 0 8px 20px">
+<li><b>Grundwert (G)</b> = das Ganze (100 %)</li>
+<li><b>Prozentwert (W)</b> = der Teil</li>
+<li><b>Prozentsatz (p)</b> = wie viel Prozent</li>
+</ul>
+<p>Formeln:</p>
+<ul style="margin:8px 0 8px 20px">
+<li>W = G · p / 100</li>
+<li>G = W · 100 / p</li>
+<li>p = W / G · 100</li>
+</ul>
+<div class="beispiel"><b>Praxis:</b> Ein Fahrrad kostet 200 €. 15 % Rabatt → wie viel sparst du?<br>
+W = 200 · 15 / 100 = 30 €. Du zahlst also 170 €.</div>`,
+gen:{
+einstieg:(i)=>{const g=pick([100,200,300,400,500]),p=pick([5,10,15,20,25,50]);return F(`${p} % von ${g} € = ? €`,g*p/100,`${g}·${p}/100 = ${g*p/100}.`,'W = G·p/100.');},
+grundlagen:(i)=>{const g=pick([80,120,160,200,240,300]),p=pick([10,15,20,25]);return F(`Fahrrad kostet ${g} €, ${p} % Rabatt. Ersparnis in €:`,g*p/100,`${g*p/100} €.`,'Ersparnis = Prozentwert.');},
+fortgeschritten:(i)=>{const g=pick([20,25,30,40,50]),w=ri(1,g-1);return F(`${w} von ${g} krank. % (gerundet):`,Math.round(w/g*100),`${(w/g*100).toFixed(1)} %.`,'p = W/G·100.');},
+experten:(i)=>{const g=pick([60,80,100,120,150]),p=pick([10,20,25,40]);const neu=g*(100-p)/100;return F(`Nach ${p} % Rabatt kostet ${neu} €. Vorher-Preis in €:`,g,`G = ${neu}·100/${100-p} = ${g}.`,'Reduziert = (100−p) %.');},
+multistep:(i)=>{const g=pick([200,250,300,400,500]),p=pick([15,20,25,40]);const w=g*p/100;return MS(`Berechne <b>${p} %</b> von <b>${g}</b> Schritt für Schritt.`,
+[{q:`1 % von ${g} = ?`,a:String(g/100),e:`${g}/100 = ${g/100}`},
+{q:`${p} % = ? (1 % · p)`,a:String(w),e:`${g/100}·${p} = ${w}`},
+{q:`Wie viel bleibt nach Abzug (${100-p} %)?`,a:String(g-w),e:`${g} − ${w} = ${g-w}`}],
+`Prozentwert systematisch.`,'W = G·p/100.');}
+}},
+u3:{name:"Promillerechnung",
+e:`<h3>Promillerechnung</h3>
+<p><b>1 ‰ (Promille) bedeutet 1 von 1000</b> oder 1/1000 oder 0,001.</p>
+<p>Promille benutzt man oft bei sehr kleinen Anteilen, z. B. Alkohol im Blut, Steigungen oder Konzentrationen.</p>
+<div class="beispiel"><b>Beispiel:</b> 5 ‰ von 2000 € sind 2000 · 5 / 1000 = 10 €.<br>
+Merke: 1 ‰ = 0,1 %.</div>
+<p>Umrechnung: ‰ in % → durch 10 teilen. % in ‰ → mal 10.</p>`,
+gen:{
+einstieg:(i)=>{const g=pick([1000,2000,5000,10000]),p=pick([1,2,5,10]);return F(`${p} ‰ von ${g} = ?`,g*p/1000,`${g}·${p}/1000 = ${g*p/1000}.`,'‰ = Tausendstel.');},
+grundlagen:(i)=>{const g=pick([2000,3000,4000,5000,8000]),p=ri(2,20);return F(`${p} ‰ von ${g} € = ? €`,g*p/1000,`${g*p/1000} €.`,'‰-Wert = G·p/1000.');},
+fortgeschritten:(i)=>{const g=pick([5000,10000,15000,20000]),p=pick([0.2,0.4,0.5,1.5]);return F(`${p.toString().replace('.',',')} ‰ von ${g} = ?`,(g*p/1000).toFixed(2),`${(g*p/1000).toFixed(2)}.`,'‰ mit Dezimalzahlen.');},
+experten:(i)=>{const l=ri(1,4),p=pick([0.3,0.4,0.5,0.8]);return F(`Getränk ${p.toString().replace('.',',')} ‰ Alkohol/L. In ${l} L wie viel ml?`,(l*p).toFixed(2),`${(l*p).toFixed(2)} ml.`,'‰ = ml/L.');},
+multistep:(i)=>{const g=pick([2000,5000,10000]),p=pick([2,4,5,8]);return MS(`Berechne <b>${p} ‰ von ${g}</b> Schritt für Schritt.`,
+[{q:`1 ‰ von ${g} = ?`,a:String(g/1000),e:`${g}/1000 = ${g/1000}`},
+{q:`${p} ‰ = ? (1 ‰ · ${p})`,a:String(g*p/1000),e:`${g/1000}·${p} = ${g*p/1000}`},
+{q:`Umrechnung in Prozent (Zahl ohne %):`,a:String(p/10),e:`${p}‰ = ${p/10}%`}],
+`Promille und Prozent ineinander umrechnen.`,'1 ‰ = 0,1 %.');}
+}},
+u4:{name:"Anwendungen (Rabatt, Zinsen, Statistik)",
+e:`<h3>Anwendungen: Rabatt, Zinsen, Steigung</h3>
+<p>Prozentrechnung begegnet dir ständig:</p>
+<ul style="margin:8px 0 8px 20px">
+<li><b>Rabatt:</b> Neuer Preis = alter Preis · (100 − p)/100</li>
+<li><b>Zinsen:</b> Zinsen = Kapital · Zinssatz / 100 (pro Jahr)</li>
+<li><b>Steigung:</b> Höhe / horizontale Länge · 100 = Steigung in %</li>
+</ul>
+<div class="beispiel"><b>Beispiel:</b> Ein T-Shirt kostet 40 €, 25 % Rabatt.<br>
+Neuer Preis = 40 · 0,75 = 30 €.</div>`,
+gen:{
+einstieg:(i)=>{const g=pick([20,30,40,50,60]),p=pick([10,20,25]);const neu=g*(1-p/100);return F(`T-Shirt ${g} €, ${p} % Rabatt. Neuer Preis in €:`,neu.toFixed(2),`${g}·${100-p}/100 = ${neu.toFixed(2)}.`,'G·(1−p/100).');},
+grundlagen:(i)=>{const k=pick([500,800,1000,1500,2000]),z=pick([1,1.5,2,3]);return F(`${k} € zu ${z.toString().replace('.',',')} % p.a. Zinsen 1. Jahr in €:`,(k*z/100).toFixed(2),`${k}·${z}/100 = ${(k*z/100).toFixed(2)}.`,'Zinsen = K·p/100.');},
+fortgeschritten:(i)=>{const g=pick([300,400,500,600,800]),p=pick([5,10,15,20,25]);const neu=g*(1-p/100);return F(`Handy ${g} €, ${p} % Rabatt. Neuer Preis in €:`,neu.toFixed(2),`${neu.toFixed(2)} €.`,'Reduzierter Preis.');},
+experten:(i)=>{const p=pick([6,8,10,12,15]),s=pick([200,250,300,400]);return F(`Straße ${p} % Steigung, ${s} m horizontal. Höhe in m:`,(s*p/100).toFixed(2),`${s}·${p}/100 = ${(s*p/100).toFixed(2)} m.`,'Höhe/Länge·100.');},
+multistep:(i)=>{const g=pick([80,120,200,250,400]),p=pick([10,15,20,25]);const w=g*p/100;return MS(`Ein Produkt kostet ${g} € und wird um ${p} % reduziert.`,
+[{q:`Rabatt-Betrag in €:`,a:String(w),e:`${g}·${p}/100 = ${w}`},
+{q:`Neuer Preis in €:`,a:String(g-w),e:`${g} − ${w} = ${g-w}`},
+{q:`Neuer Preis als Anteil des Originals in % (Zahl):`,a:String(100-p),e:`${100-p} %`}],
+`Rabatt mehrstufig.`,'Prozentwert abziehen.');}
+}}
+}}
+}},
+b2:{name:"Geometrie",icon:"📐",kapitel:{
+k5:{name:"Symmetrie und Winkel",icon:"🪞",unter:{
+u1:{name:"Achsensymmetrie",
+e:`<h3>Achsensymmetrie</h3>
+<p>Eine Figur ist <b>achsensymmetrisch</b>, wenn du sie entlang einer Linie (der Symmetrieachse) falten kannst und beide Hälften genau aufeinander passen.</p>
+<div class="beispiel"><b>Beispiele aus dem Alltag:</b><br>
+• Ein Quadrat hat 4 Symmetrieachsen<br>
+• Ein Rechteck hat 2<br>
+• Ein gleichseitiges Dreieck hat 3<br>
+• Ein Kreis hat unendlich viele<br>
+• Viele Buchstaben wie A, H, M, O, T, X, Y sind achsensymmetrisch</div>
+<p>Regelmäßige n-Ecke haben immer n Symmetrieachsen.</p>`,
+gen:{
+einstieg:(i)=>{const fig=pick([['Quadrat',4],['Rechteck',2],['gleichseitiges Dreieck',3],['Kreis','unendlich']]);return MC(`Wie viele Symmetrieachsen hat ein <b>${fig[0]}</b>?`,String(fig[1]),['1','2','3','4','6'],`${fig[0]}: ${fig[1]}.`,'Regelmäßige Figuren haben mehrere.');},
+grundlagen:(i)=>{const n=ri(3,10);return F(`Wie viele Symmetrieachsen hat ein regelmäßiges <b>${n}-Eck</b>?`,n,`${n} Achsen.`,'Regelmäßig n-Eck → n Achsen.');},
+fortgeschritten:(i)=>{const fig=pick([['Parallelogramm',0],['Raute',2],['gleichschenkliges Trapez',1],['Deltoid',1]]);return MC(`Wie viele Symmetrieachsen hat ein <b>${fig[0]}</b> (allgemein)?`,String(fig[1]),['0','1','2','4'],`${fig[0]}: ${fig[1]}.`,'Einzeln prüfen.');},
+experten:(i)=>{const b=pick([['A',1],['H',2],['M',1],['O',2],['T',1],['X',2],['Z',0]]);return F(`Wie viele Symmetrieachsen hat der Großbuchstabe <b>${b[0]}</b>?`,b[1],`${b[1]} Achse(n).`,'Buchstaben prüfen.');},
+multistep:(i)=>{const n=ri(3,8);return MS(`Analysiere ein regelmäßiges <b>${n}-Eck</b>.`,
+[{q:`Anzahl der Ecken (= n):`,a:String(n),e:`${n}`},
+{q:`Anzahl der Symmetrieachsen:`,a:String(n),e:`= n = ${n}`},
+{q:`Innenwinkelsumme in Grad:`,a:String((n-2)*180),e:`(n−2)·180 = ${(n-2)*180}`},
+{q:`Einzelner Innenwinkel in Grad (gerundet):`,a:String(Math.round((n-2)*180/n)),e:`${((n-2)*180/n).toFixed(1)}°`}],
+`Regelmäßige Vielecke ganzheitlich.`,'Anzahl Achsen = n.');}
+}},
+u2:{name:"Punktsymmetrie",
+e:`<h3>Punktsymmetrie</h3>
+<p>Eine Figur ist <b>punktsymmetrisch</b>, wenn sie nach einer Drehung um 180° um einen Punkt (das Symmetriezentrum) wieder genau so aussieht wie vorher.</p>
+<div class="beispiel"><b>Beispiele:</b><br>
+• Parallelogramm und Raute sind punktsymmetrisch<br>
+• Buchstaben wie S, N, Z, H, I, O, X<br>
+• Viele Verkehrszeichen und Logos</div>
+<p>Tipp: Drehe das Blatt einmal um und schau, ob die Figur gleich bleibt.</p>`,
+gen:{
+einstieg:(i)=>{const fig=pick([['Parallelogramm',1],['Dreieck',0],['Trapez',0],['Halbkreis',0],['Quadrat',1]]);return MC(`Ist ein <b>${fig[0]}</b> punktsymmetrisch?`,fig[1]?'Ja':'Nein',[fig[1]?'Nein':'Ja'],`${fig[1]?'Ja':'Nein'}.`,'180°-Drehung prüfen.');},
+grundlagen:(i)=>{const b=pick([['S',1],['N',1],['Z',1],['H',1],['A',0],['B',0],['F',0]]);return MC(`Ist der Buchstabe <b>${b[0]}</b> punktsymmetrisch?`,b[1]?'Ja':'Nein',[b[1]?'Nein':'Ja'],`${b[0]}: ${b[1]?'ja':'nein'}.`,'S,N,Z,H sind typisch.');},
+fortgeschritten:(i)=>{const s=pick(['MATHE','HAUS','SOFA','ANNA','OTTO','RADAR','TISCH']);let c=0;for(const ch of s)if('SNZHIOX'.includes(ch))c++;return F(`Wie viele Buchstaben in <b>${s}</b> sind punktsymmetrisch?`,c,`${c}.`,'S,N,Z,H,I,O,X prüfen.');},
+experten:(i)=>{return MC(`Welche Figur ist <b>immer</b> punktsymmetrisch?`,'Parallelogramm',['Dreieck','Trapez','Deltoid (nicht Raute)'],'Parallelogramm: Zentrum = Diagonalenschnitt.');},
+multistep:(i)=>{return MS(`Prüfe die Punktsymmetrie der Buchstaben <b>S, A, Z</b>.`,
+[{q:`Ist S punktsymmetrisch? (ja/nein)`,a:'ja',e:'S: 180°-Drehung → S.'},
+{q:`Ist A punktsymmetrisch? (ja/nein)`,a:'nein',e:'A: keine 180°-Symmetrie.'},
+{q:`Ist Z punktsymmetrisch? (ja/nein)`,a:'ja',e:'Z: 180°-Drehung → Z.'},
+{q:`Wie viele der 3 Buchstaben sind punktsymmetrisch?`,a:'2',e:'S und Z → 2 Stück.'}],
+`Punktsymmetrie bei Buchstaben einzeln prüfen.`,'S,N,Z,H,I,O,X sind punktsymmetrisch.');}
+}},
+u3:{name:"Winkelpaare",
+e:`<h3>Winkelpaare</h3>
+<p>Wenn sich zwei Geraden schneiden, entstehen besondere Winkelpaare:</p>
+<ul style="margin:8px 0 8px 20px">
+<li><b>Scheitelwinkel:</b> liegen sich gegenüber und sind gleich groß</li>
+<li><b>Nebenwinkel:</b> liegen nebeneinander und ergänzen sich zu 180°</li>
+<li><b>Stufenwinkel:</b> an parallelen Geraden (F-Form) – gleich groß</li>
+<li><b>Wechselwinkel:</b> an parallelen Geraden (Z-Form) – gleich groß</li>
+</ul>
+<div class="beispiel"><b>Praxis:</b> An einer Straßenkreuzung siehst du Scheitel- und Nebenwinkel. Bei parallelen Gleisen helfen Stufen- und Wechselwinkel.</div>`,
+gen:{
+einstieg:(i)=>{const n=pick(['Scheitelwinkel','Nebenwinkel','Stufenwinkel','Wechselwinkel']);return MC(`Welches Winkelpaar liegt sich an einer Kreuzung gegenüber?`,'Scheitelwinkel',['Nebenwinkel','Stufenwinkel','Wechselwinkel'],'Scheitelwinkel: gegenüber.');},
+grundlagen:(i)=>{const a=ri(20,160);return F(`Winkel ${a}°, Nebenwinkel = ?`,180-a,`180−${a} = ${180-a}.`,'Nebenwinkel ergänzen zu 180°.');},
+fortgeschritten:(i)=>{const a=ri(20,160);return F(`Stufenwinkel an parallelen Geraden, einer ${a}°. Der andere = ?`,a,`Gleich groß.`,'Stufenwinkel gleich.');},
+experten:(i)=>{return F(`α=3x, β=2x, β Nebenwinkel von α. x = ?`,36,`5x = 180 → x = 36.`,'Nebenwinkel: Summe 180°.');},
+multistep:(i)=>{const a=ri(30,120);return MS(`Ein Winkel α = <b>${a}°</b> an einer Geradenkreuzung.`,
+[{q:`Nebenwinkel von α in Grad:`,a:String(180-a),e:`180−${a} = ${180-a}`},
+{q:`Scheitelwinkel von α in Grad:`,a:String(a),e:`Gleich groß wie α → ${a}`},
+{q:`Scheitelwinkel des Nebenwinkels in Grad:`,a:String(180-a),e:`${180-a}`},
+{q:`Summe α + Nebenwinkel + Scheitelwinkel + Nebenwinkel-Scheitel = ?`,a:String(2*a+2*(180-a)),e:`2·180 = 360°`}],
+`Alle vier Winkel an einer Kreuzung.`,'Scheitelwinkel gleich, Nebenwinkel ergänzen 180°.');}
+}},
+u4:{name:"Winkel- und Streckensymmetrale",
+e:`<h3>Winkel- und Streckensymmetrale</h3>
+<p>Die <b>Winkelsymmetrale</b> teilt einen Winkel in zwei gleich große Teile.</p>
+<p>Die <b>Streckensymmetrale</b> (Mittelsenkrechte) steht senkrecht auf einer Strecke und teilt sie in der Mitte.</p>
+<div class="beispiel"><b>Wichtig im Dreieck:</b><br>
+• Schnittpunkt der Streckensymmetralen = Umkreismittelpunkt<br>
+• Schnittpunkt der Winkelsymmetralen = Inkreismittelpunkt</div>
+<p>Mit Zirkel und Lineal kannst du beide leicht konstruieren.</p>`,
+gen:{
+einstieg:(i)=>{const a=ri(20,160);return MC(`Winkelsymmetrale eines ${a}°-Winkels teilt ihn …`,'in zwei gleich große',['in drei','in vier','beliebig'],`${a/2}° und ${a/2}°.`,'Symmetrale = halbieren.');},
+grundlagen:(i)=>{const a=ri(20,160);return F(`Hälfte eines ${a}°-Winkels = ?`,a/2,`${a/2}°.`,'Winkelsymmetrale halbiert.');},
+fortgeschritten:(i)=>{return MC(`Wo liegt der <b>Umkreismittelpunkt</b>?`,'Schnittpunkt der Streckensymmetralen',['Winkelsymmetralen','Höhen','Seitenhalbierende'],'Umkreis = Streckensymmetralen.');},
+experten:(i)=>{return MC(`Wo liegt der <b>Inkreismittelpunkt</b>?`,'Schnittpunkt der Winkelsymmetralen',['Streckensymmetralen','Höhen','Seitenhalbierende'],'Inkreis = Winkelsymmetralen.');},
+multistep:(i)=>{const a=ri(40,120),b=ri(40,120);return MS(`Ein Dreieck hat α=${a}°, β=${b}°.`,
+[{q:`γ in Grad:`,a:String(180-a-b),e:`180−${a}−${b} = ${180-a-b}`},
+{q:`Halbierung von α in Grad:`,a:String(a/2),e:`${a/2}°`},
+{q:`Halbierung von β in Grad:`,a:String(b/2),e:`${b/2}°`},
+{q:`Summe der beiden halben Winkel in Grad:`,a:String(a/2+b/2),e:`${a/2+b/2}°`}],
+`Winkelsymmetralen und Inkreis.`,'Winkelsymmetrale halbiert jeden Winkel.');}
+}}
+}},
+k6:{name:"Dreiecke",icon:"🔺",unter:{
+u1:{name:"Eigenschaften und Einteilung",
+e:`<h3>Eigenschaften und Einteilung von Dreiecken</h3>
+<p>In jedem Dreieck gilt: Die <b>Summe der Innenwinkel ist immer 180°</b>.</p>
+<p>Nach den Winkeln unterscheidet man:</p>
+<ul style="margin:8px 0 8px 20px">
+<li><b>Spitzwinklig:</b> alle Winkel kleiner als 90°</li>
+<li><b>Rechtwinklig:</b> ein Winkel genau 90°</li>
+<li><b>Stumpfwinklig:</b> ein Winkel größer als 90°</li>
+</ul>
+<div class="beispiel"><b>Gleichschenkliges Dreieck:</b> Zwei Seiten gleich lang → die Basiswinkel sind gleich groß.</div>`,
+gen:{
+einstieg:(i)=>{const a=ri(30,90),b=ri(30,180-a-10);return F(`α=${a}°, β=${b}°, γ=?`,180-a-b,`${180-a-b}°.`,'Summe 180°.');},
+grundlagen:(i)=>{const t=pick([['rechtwinklig','ein Winkel 90°'],['spitzwinklig','alle < 90°'],['stumpfwinklig','ein Winkel > 90°']]);return MC(`Dreieck mit ${t[1]} heißt?`,t[0],['rechtwinklig','spitzwinklig','stumpfwinklig','gleichseitig'].filter(x=>x!==t[0]),`${t[0]}.`,'Nach Winkeln einteilen.');},
+fortgeschritten:(i)=>{const s=ri(30,80);return F(`Gleichschenklig, Scheitelwinkel ${s}°. Basiswinkel?`,(180-s)/2,`(${180-s})/2 = ${(180-s)/2}.`,'Basiswinkel gleich.');},
+experten:(i)=>{return F(`α = x+10, β = 2x, γ = 50. x = ?`,40,`x+10+2x+50 = 180 → 3x=120 → x=40.`,'Summe 180°.');},
+multistep:(i)=>{const a=ri(40,80),b=ri(40,80);return MS(`Dreieck: α=${a}°, β=${b}°.`,
+[{q:`γ in Grad:`,a:String(180-a-b),e:`180−${a}−${b} = ${180-a-b}`},
+{q:`Um welche Art Dreieck handelt es sich (spitz/recht/stumpf)?`,a:(180-a-b)>90?'stumpfwinklig':(180-a-b)===90?'rechtwinklig':'spitzwinklig',e:`γ=${180-a-b}`},
+{q:`Gibt es zwei gleiche Winkel? (ja/nein)`,a:(a===b||a===180-a-b||b===180-a-b)?'ja':'nein',e:'Prüfen auf gleichschenklig.'}],
+`Dreieck vollständig analysieren.`,'Winkelsumme 180°.');}
+}},
+u2:{name:"Dreieckskonstruktionen",
+e:`<h3>Dreieckskonstruktionen und Kongruenz</h3>
+<p>Mit bestimmten Angaben kannst du ein Dreieck eindeutig konstruieren:</p>
+<ul style="margin:8px 0 8px 20px">
+<li><b>SSS</b> – drei Seiten</li>
+<li><b>SWS</b> – zwei Seiten und der eingeschlossene Winkel</li>
+<li><b>WSW</b> – eine Seite und die beiden anliegenden Winkel</li>
+<li><b>SSW</b> – zwei Seiten und ein Winkel gegenüber der längeren Seite (nicht immer eindeutig)</li>
+</ul>
+<p>Zusätzlich muss die <b>Dreiecksungleichung</b> gelten: Die Summe zweier Seiten ist immer größer als die dritte Seite.</p>
+<div class="beispiel">Wenn a=3, b=4, c=8 → 3+4=7 < 8 → kein Dreieck möglich!</div>`,
+gen:{
+einstieg:(i)=>{return MC(`Welche Angaben reichen für eindeutiges Dreieck?`,'SSS',['SS','WW','1 Seite'],'SSS ist eindeutig.');},
+grundlagen:(i)=>{return MC(`Was heißt <b>SWS</b>?`,'2 Seiten + eingeschlossener Winkel',['3 Seiten','3 Winkel','1 Seite + Winkel'],'Winkel zwischen den Seiten.');},
+fortgeschritten:(i)=>{return MC(`Wann ist <b>SSW</b> eindeutig?`,'Wenn Winkel der längeren Seite gegenüberliegt',['immer','nie','spitzwinklig'],'SSW-Kriterium.');},
+experten:(i)=>{const a=ri(3,10),b=ri(3,10),c=ri(3,10);const ok=a+b>c&&a+c>b&&b+c>a;return MC(`Gegeben a=${a}, b=${b}, c=${c}. Konstruierbar?`,ok?'Ja':'Nein',[ok?'Nein':'Ja'],`${a}+${b}=${a+b} ${a+b>c?'>':'≤'} ${c}.`,'Dreiecksungleichung.');},
+multistep:(i)=>{const a=ri(3,8),b=ri(3,8),c=a+b-ri(1,3);return MS(`Prüfe die Dreiecksungleichung für a=${a}, b=${b}, c=${c}.`,
+[{q:`a+b = ?`,a:String(a+b),e:`${a+b}`},
+{q:`a+b > c? (ja/nein)`,a:a+b>c?'ja':'nein',e:`${a+b} vs ${c}`},
+{q:`a+c > b? (ja/nein)`,a:a+c>b?'ja':'nein',e:`${a+c} vs ${b}`},
+{q:`b+c > a? (ja/nein)`,a:b+c>a?'ja':'nein',e:`${b+c} vs ${a}`},
+{q:`Dreieck konstruierbar? (ja/nein)`,a:(a+b>c&&a+c>b&&b+c>a)?'ja':'nein',e:'Alle drei Bedingungen müssen erfüllt sein.'}],
+`Dreiecksungleichung dreifach prüfen.`,'Summe zweier Seiten > dritte.');}
+}},
+u3:{name:"Besondere Dreiecke",
+e:`<h3>Besondere Dreiecke</h3>
+<p><b>Gleichseitiges Dreieck:</b> Alle Seiten und alle Winkel gleich (je 60°).</p>
+<p><b>Rechtwinkliges Dreieck:</b> Ein Winkel 90°. Die längste Seite heißt <b>Hypotenuse</b> (gegenüber dem rechten Winkel). Die anderen beiden Seiten heißen Katheten.</p>
+<div class="beispiel"><b>Gleichschenklig + rechtwinklig:</b> Die Basiswinkel sind je 45°.</div>
+<p>Im rechtwinkligen Dreieck ergänzen sich die beiden spitzen Winkel immer zu 90°.</p>`,
+gen:{
+einstieg:(i)=>{return F(`Winkel im gleichseitigen Dreieck (in Grad):`,60,'180:3 = 60.','Alle 60°.');},
+grundlagen:(i)=>{return MC(`Längste Seite im rechtwinkligen Dreieck?`,'Hypotenuse',['Kathete','Ankathete','Gegenkathete'],'Hypotenuse gegenüber 90°.');},
+fortgeschritten:(i)=>{const b=ri(20,70);return F(`Gleichschenklig, Basiswinkel ${b}°. Scheitelwinkel?`,180-2*b,`180−2·${b} = ${180-2*b}.`,'Summe 180°.');},
+experten:(i)=>{const a=ri(15,75);return F(`Rechtwinklig, spitzer Winkel ${a}°. Anderer spitzer Winkel?`,90-a,`180−90−${a} = ${90-a}.`,'Spitze Winkel ergänzen zu 90°.');},
+multistep:(i)=>{const a=ri(30,70);return MS(`Gleichschenkliges Dreieck mit Scheitelwinkel <b>${a}°</b>.`,
+[{q:`Summe der beiden Basiswinkel in Grad:`,a:String(180-a),e:`180−${a} = ${180-a}`},
+{q:`Ein Basiswinkel in Grad:`,a:String((180-a)/2),e:`${((180-a)/2).toFixed(1)}°`},
+{q:`Ist das Dreieck auch rechtwinklig? (ja/nein)`,a:(180-a)/2===45||a===90?'ja':'nein',e:'Nur wenn 90° enthalten.'}],
+`Gleichschenklige Dreiecke analysieren.`,'Basiswinkel gleich groß.');}
+}},
+u4:{name:"Satz von Thales",
+e:`<h3>Satz von Thales</h3>
+<p>Wenn du einen Kreis zeichnest und den Durchmesser AB nimmst, dann gilt: Jeder Punkt C auf dem Kreisbogen bildet mit A und B ein <b>rechtwinkliges Dreieck</b> (Winkel bei C = 90°).</p>
+<div class="beispiel"><b>Praktisch:</b> Du willst einen rechten Winkel konstruieren, ohne Geodreieck. Zeichne einen Kreis, nimm den Durchmesser und wähle einen Punkt auf dem Kreis – fertig ist der rechte Winkel!</div>
+<p>Der Radius ist immer die Hälfte des Durchmessers. Außerdem gilt dann der Satz des Pythagoras: AC² + BC² = AB².</p>`,
+gen:{
+einstieg:(i)=>{return MC(`Auf welcher Linie liegen alle C mit ∠ACB=90°?`,'Thaleskreis',['Gerade','Parabel','Ellipse'],'Thaleskreis über AB.');},
+grundlagen:(i)=>{const d=ri(8,40);return F(`A und B ${d} cm auseinander. Radius in cm:`,d/2,`${d}/2 = ${d/2}.`,'r = d/2.');},
+fortgeschritten:(i)=>{return MC(`C auf Thaleskreis. ∠ACB = ?`,'90°',['60°','45°','variabel'],'Immer 90°.');},
+experten:(i)=>{const d=ri(6,20);return F(`A=(0|0), B=(${d}|0), C auf Thaleskreis. AC² + BC² = ?`,d*d,`= AB² = ${d*d}.`,'Thales ⇒ Pythagoras.');},
+multistep:(i)=>{const d=pick([10,14,18,20,24]);return MS(`Thaleskreis mit Durchmesser AB = <b>${d} cm</b>.`,
+[{q:`Radius in cm:`,a:String(d/2),e:`r = d/2 = ${d/2}`},
+{q:`Mittelpunkt M liegt wie weit von A? (cm)`,a:String(d/2),e:`${d/2} cm`},
+{q:`AC² + BC² für beliebiges C auf Kreis (Zahl):`,a:String(d*d),e:`= AB² = ${d*d}`},
+{q:`Wenn AC = ${Math.round(d/3*2)} cm, wie groß ist BC in cm (gerundet)?`,a:Math.sqrt(d*d-Math.round(d/3*2)**2).toFixed(2),e:`BC = √(${d*d} − ${Math.round(d/3*2)**2}) = ${Math.sqrt(d*d-Math.round(d/3*2)**2).toFixed(2)}`}],
+`Thaleskreis: Radius und Pythagoras.`,'Thales ⇒ Pythagoras.');}
+}},
+u5:{name:"Die 4 merkwürdigen Punkte",
+e:`<h3>Die 4 merkwürdigen Punkte im Dreieck</h3>
+<p>In jedem Dreieck treffen sich bestimmte Linien in besonderen Punkten:</p>
+<ul style="margin:8px 0 8px 20px">
+<li><b>Umkreismittelpunkt:</b> Schnittpunkt der Streckensymmetralen</li>
+<li><b>Inkreismittelpunkt:</b> Schnittpunkt der Winkelsymmetralen</li>
+<li><b>Schwerpunkt:</b> Schnittpunkt der Seitenhalbierenden</li>
+<li><b>Höhenschnittpunkt:</b> Schnittpunkt der Höhen</li>
+</ul>
+<div class="beispiel">Nur im gleichseitigen Dreieck fallen alle vier Punkte zusammen.</div>`,
+gen:{
+einstieg:(i)=>{return MC(`Inkreismittelpunkt = Schnittpunkt der …`,'Winkelsymmetralen',['Streckensymmetralen','Höhen','Seitenhalbierenden'],'Inkreis: Winkelsymmetralen.');},
+grundlagen:(i)=>{return MC(`Umkreismittelpunkt = Schnittpunkt der …`,'Streckensymmetralen',['Winkelsymmetralen','Höhen','Seitenhalbierenden'],'Umkreis: Streckensymmetralen.');},
+fortgeschritten:(i)=>{return MC(`Schwerpunkt = Schnittpunkt der …`,'Seitenhalbierenden',['Höhen','Symmetralen','Winkelhalbierenden'],'Schwerpunkt: Seitenhalbierende.');},
+experten:(i)=>{return MC(`Bei welchem Dreieck fallen alle 4 Punkte zusammen?`,'Gleichseitig',['Gleichschenklig','Rechtwinklig','Stumpfwinklig'],'Nur gleichseitig.');},
+multistep:(i)=>{return MS(`Ordne die 4 merkwürdigen Punkte richtig zu.`,
+[{q:`Welche Linien treffen sich im Umkreismittelpunkt?`,a:'streckensymmetralen',e:'Streckensymmetralen.',alt:['Streckensymmetralen']},
+{q:`Welche Linien treffen sich im Inkreismittelpunkt?`,a:'winkelsymmetralen',e:'Winkelsymmetralen.',alt:['Winkelsymmetralen']},
+{q:`Welche Linien treffen sich im Schwerpunkt?`,a:'seitenhalbierende',e:'Seitenhalbierende.',alt:['Seitenhalbierende']},
+{q:`Welche Linien treffen sich im Höhenschnittpunkt?`,a:'höhen',e:'Höhen.',alt:['Höhen']}],
+`Die vier merkwürdigen Punkte.`,'Jeder Punkt = Schnitt besonderer Linien.');}
+}}
+}},
+k7:{name:"Vierecke und Vielecke",icon:"⬛",unter:{
+u1:{name:"Parallelogramm",
+e:`<h3>Parallelogramm</h3>
+<p>Beim Parallelogramm sind die gegenüberliegenden Seiten parallel und gleich lang. Die gegenüberliegenden Winkel sind gleich, Nachbarwinkel ergänzen sich zu 180°.</p>
+<p><b>Fläche:</b> A = a · h (Grundseite mal Höhe)<br>
+<b>Umfang:</b> U = 2 · (a + b)</p>
+<div class="beispiel"><b>Alltag:</b> Viele Parkettmuster, Zäune oder Schrägfenster sind Parallelogramme.</div>`,
+gen:{
+einstieg:(i)=>{const a=ri(3,12),h=ri(2,10);return F(`Parallelogramm a=${a}, h=${h}. Fläche in cm²:`,a*h,`${a}·${h} = ${a*h}.`,'A = a·h.');},
+grundlagen:(i)=>{const a=ri(3,12),b=ri(3,12);return F(`Parallelogramm a=${a}, b=${b}. Umfang in cm:`,2*(a+b),`2·(${a}+${b}) = ${2*(a+b)}.`,'U = 2(a+b).');},
+fortgeschritten:(i)=>{const a=ri(4,12),h=ri(2,8);return F(`A=${a*h} cm², h=${h}. a = ? cm`,a,`a = A/h = ${a}.`,'Umstellen.');},
+experten:(i)=>{const a=ri(40,140);return F(`α=${a}°. Nachbarwinkel β = ?°`,180-a,`180−${a} = ${180-a}.`,'Nachbarwinkel 180°.');},
+multistep:(i)=>{const a=ri(6,12),h=ri(3,8);return MS(`Parallelogramm mit a=${a} cm und h=${h} cm.`,
+[{q:`Fläche A in cm²:`,a:String(a*h),e:`${a*h}`},
+{q:`Wenn b = ${a} cm (Raute), Umfang U in cm:`,a:String(4*a),e:`4·${a} = ${4*a}`},
+{q:`Nachbarwinkel in Grad (wenn α = 60°):`,a:'120',e:'180−60 = 120'}],
+`Parallelogramm-Aufgaben kombiniert.`,'A = a·h, U = 2(a+b).');}
+}},
+u2:{name:"Raute (Rhombus)",
+e:`<h3>Raute (Rhombus)</h3>
+<p>Eine Raute hat vier gleich lange Seiten. Die Diagonalen stehen senkrecht aufeinander und halbieren sich.</p>
+<p><b>Fläche:</b> A = a · h  oder  A = (e · f) / 2<br>
+<b>Umfang:</b> U = 4 · a</p>
+<div class="beispiel">Eine Raute ist wie ein „schiefes Quadrat“. Viele Drachen und manche Verkehrszeichen sind Rauten.</div>`,
+gen:{
+einstieg:(i)=>{const a=ri(3,12);return F(`Raute a=${a} cm. U in cm:`,4*a,`4·${a} = ${4*a}.`,'U = 4a.');},
+grundlagen:(i)=>{const e=ri(4,16),f=ri(4,16);return F(`Raute e=${e}, f=${f}. Fläche in cm²:`,e*f/2,`(${e}·${f})/2 = ${e*f/2}.`,'A = (e·f)/2.');},
+fortgeschritten:(i)=>{const a=ri(4,12),h=ri(3,10);return F(`Raute a=${a}, h=${h}. Fläche in cm²:`,a*h,`${a*h}.`,'A = a·h.');},
+experten:(i)=>{const e=ri(6,16),f=ri(6,16);return F(`Raute A=${e*f/2} cm², e=${e}. f = ? cm`,f,`f = 2A/e = ${f}.`,'Umstellen.');},
+multistep:(i)=>{const e=ri(6,16),f=ri(6,16);return MS(`Raute mit Diagonalen e=${e} cm und f=${f} cm.`,
+[{q:`Fläche A in cm²:`,a:String(e*f/2),e:`(${e}·${f})/2 = ${e*f/2}`},
+{q:`Seitenlänge a in cm (gerundet, a=√((e/2)²+(f/2)²)):`,a:Math.sqrt((e/2)**2+(f/2)**2).toFixed(2),e:`a = ${Math.sqrt((e/2)**2+(f/2)**2).toFixed(2)}`},
+{q:`Umfang U in cm (gerundet):`,a:(4*Math.sqrt((e/2)**2+(f/2)**2)).toFixed(2),e:`4·a = ${(4*Math.sqrt((e/2)**2+(f/2)**2)).toFixed(2)}`}],
+`Raute: Diagonalen → Seite → Umfang.`,'A = (e·f)/2.');}
+}},
+u3:{name:"Trapez",
+e:`<h3>Trapez</h3>
+<p>Ein Trapez hat genau ein Paar paralleler Seiten (die Grundseiten a und c).</p>
+<p><b>Fläche:</b> A = (a + c) / 2 · h  (Mittelwert der parallelen Seiten mal Höhe)</p>
+<div class="beispiel"><b>Praxis:</b> Viele Dächer, Tische oder Straßenschilder haben Trapezform. Die mittlere Länge ist der Durchschnitt von a und c.</div>`,
+gen:{
+einstieg:(i)=>{return MC(`Was ist typisch für ein Trapez?`,'Zwei parallele Seiten',['Alle Seiten gleich','Alle Winkel 90°','Diagonalen gleich'],'Definition: a ∥ c.');},
+grundlagen:(i)=>{const a=ri(6,14),c=ri(3,a-1),h=ri(2,8);return F(`Trapez a=${a}, c=${c}, h=${h}. Fläche in cm²:`,(a+c)/2*h,`(${a}+${c})/2 · ${h} = ${(a+c)/2*h}.`,'A = (a+c)/2·h.');},
+fortgeschritten:(i)=>{const a=ri(8,16),c=ri(3,a-1),s=ri(3,7);return F(`Gleichschenkliges Trapez a=${a}, c=${c}, Schenkel ${s}. U in cm:`,a+c+2*s,`${a+c+2*s}.`,'Summe aller Seiten.');},
+experten:(i)=>{const a=ri(6,14),c=ri(3,a-1),h=ri(2,8);const A=(a+c)/2*h;return F(`A=${A} cm², a=${a}, c=${c}. h = ? cm`,h,`h = 2A/(a+c) = ${h}.`,'Umstellen.');},
+multistep:(i)=>{const a=ri(8,14),c=ri(3,7),h=ri(3,8);return MS(`Trapez mit a=${a} cm, c=${c} cm, h=${h} cm.`,
+[{q:`Mittlere Länge (a+c)/2 in cm:`,a:String((a+c)/2),e:`(${a}+${c})/2 = ${(a+c)/2}`},
+{q:`Fläche A in cm²:`,a:String((a+c)/2*h),e:`${(a+c)/2}·${h} = ${(a+c)/2*h}`},
+{q:`Ist die Fläche größer oder kleiner als ein Rechteck a·h? (größer/kleiner)`,a:(a+c)/2*h>a*h?'kleiner':'größer',e:`Vergleich mit a·h = ${a*h}.`}],
+`Trapezfläche Schritt für Schritt.`,'A = (a+c)/2 · h.');}
+}},
+u4:{name:"Deltoid",
+e:`<h3>Deltoid (Drachenviereck)</h3>
+<p>Ein Deltoid hat zwei Paare benachbarter gleich langer Seiten. Eine Diagonale ist Symmetrieachse.</p>
+<p><b>Fläche:</b> A = (e · f) / 2<br>
+<b>Umfang:</b> U = 2 · (a + b)</p>
+<div class="beispiel">Typisch für Drachen (daher der Name) und manche Fenster oder Logos.</div>`,
+gen:{
+einstieg:(i)=>{return MC(`Wie viele Symmetrieachsen hat ein Deltoid?`,'1',['2','0','4'],'Nur Diagonale e.');},
+grundlagen:(i)=>{const e=ri(6,16),f=ri(4,14);return F(`Deltoid e=${e}, f=${f}. Fläche in cm²:`,e*f/2,`${e*f/2}.`,'A = (e·f)/2.');},
+fortgeschritten:(i)=>{const a=ri(4,10),b=ri(3,9);return F(`Deltoid a=${a}, b=${b}. U in cm:`,2*(a+b),`${2*(a+b)}.`,'U = 2(a+b).');},
+experten:(i)=>{const e=ri(8,20),f=ri(4,14);const A=e*f/2;return F(`A=${A} cm², e=${e}. f = ? cm`,f,`f = 2A/e = ${f}.`,'Umstellen.');},
+multistep:(i)=>{const e=ri(8,16),f=ri(6,12);return MS(`Deltoid mit e=${e} cm, f=${f} cm.`,
+[{q:`Fläche A in cm²:`,a:String(e*f/2),e:`${e*f/2}`},
+{q:`Verdopple e auf ${2*e} cm – neue Fläche in cm²:`,a:String(2*e*f/2),e:`${2*e*f/2}`},
+{q:`Um welchen Faktor vergrößert sich A?`,a:'2',e:'Verdopplung von e verdoppelt A.'}],
+`Deltoid: Flächenzusammenhang.`,'A = (e·f)/2.');}
+}},
+u5:{name:"Regelmäßige Vielecke",
+e:`<h3>Regelmäßige Vielecke</h3>
+<p>Bei einem regelmäßigen n-Eck sind alle Seiten und alle Winkel gleich.</p>
+<ul style="margin:8px 0 8px 20px">
+<li>Winkelsumme = (n − 2) · 180°</li>
+<li>Einzelner Innenwinkel = Winkelsumme / n</li>
+<li>Anzahl der Diagonalen = n · (n − 3) / 2</li>
+</ul>
+<div class="beispiel">Ein Quadrat (4-Eck) hat Winkelsumme 360° und 2 Diagonalen. Ein Sechseck hat 720° und 9 Diagonalen.</div>`,
+gen:{
+einstieg:(i)=>{const n=ri(3,10);return F(`Winkelsumme eines ${n}-Ecks in Grad:`,(n-2)*180,`(${n}−2)·180 = ${(n-2)*180}.`,'(n−2)·180.');},
+grundlagen:(i)=>{const n=ri(3,10);return F(`Einzelner Innenwinkel eines regelmäßigen ${n}-Ecks:`,Math.round((n-2)*180/n),`${((n-2)*180/n).toFixed(1)}°.`,'Summe/n.');},
+fortgeschritten:(i)=>{const n=ri(4,12);return F(`Anzahl Diagonalen eines regelmäßigen ${n}-Ecks:`,n*(n-3)/2,`n(n−3)/2 = ${n*(n-3)/2}.`,'Formel.');},
+experten:(i)=>{const n=ri(5,15);return F(`Ein regelmäßiges Vieleck hat ${(n-2)*180}° Winkelsumme. n = ?`,n,`(n−2)·180 = ${(n-2)*180} → n = ${n}.`,'Nach n umstellen.');},
+multistep:(i)=>{const n=ri(5,10);return MS(`Analysiere ein regelmäßiges <b>${n}-Eck</b>.`,
+[{q:`Winkelsumme in Grad:`,a:String((n-2)*180),e:`(${n}−2)·180 = ${(n-2)*180}`},
+{q:`Einzelner Innenwinkel in Grad (ganzzahlig):`,a:String((n-2)*180/n),e:`${((n-2)*180/n).toFixed(1)}`},
+{q:`Anzahl Diagonalen:`,a:String(n*(n-3)/2),e:`n(n−3)/2 = ${n*(n-3)/2}`}],
+`Regelmäßige Vielecke vollständig.`,'(n−2)·180° und n(n−3)/2.');}
+}},
+u6:{name:"Flächeninhalte vergleichen",
+e:`<h3>Flächeninhalte vergleichen</h3>
+<p>Wichtige Formeln auf einen Blick:</p>
+<ul style="margin:8px 0 8px 20px">
+<li>Quadrat: a²</li>
+<li>Rechteck: a · b</li>
+<li>Parallelogramm: a · h</li>
+<li>Dreieck: (g · h) / 2</li>
+<li>Raute / Deltoid: (e · f) / 2</li>
+<li>Trapez: (a + c) / 2 · h</li>
+</ul>
+<p>Wenn du die Formeln kennst, kannst du Flächen leicht vergleichen oder umrechnen.</p>`,
+gen:{
+einstieg:(i)=>{const fig=pick(['Parallelogramm','Rechteck','Quadrat','Dreieck']);const f={'Parallelogramm':'a·h','Rechteck':'a·b','Quadrat':'a²','Dreieck':'(g·h)/2'};return MC(`Formel für <b>${fig}</b>?`,f[fig],Object.values(f).filter(x=>x!==f[fig]).slice(0,3),`${fig}: ${f[fig]}.`,'Formelübersicht.');},
+grundlagen:(i)=>{const a=ri(3,12);return F(`Quadrat a=${a}. Fläche in cm²:`,a*a,`${a*a}.`,'a².');},
+fortgeschritten:(i)=>{const e=ri(6,16),f=ri(6,16);return F(`Raute e=${e}, f=${f}. Fläche in cm²:`,e*f/2,`${e*f/2}.`,'(e·f)/2.');},
+experten:(i)=>{const a=ri(6,14),c=ri(3,a-1),h=ri(3,8),g=ri(4,10);const A1=(a+c)/2*h;return F(`Trapez a=${a},c=${c},h=${h} (A₁). Dreieck g=${g} hat gleiche Fläche. h<sub>D</sub> in cm (2 Dezimalen):`,(2*A1/g).toFixed(2),`h = 2A/g = ${(2*A1/g).toFixed(2)}.`,'Flächen gleichsetzen.');},
+multistep:(i)=>{const a=ri(6,12),b=ri(4,10);return MS(`Vergleiche Quadrat a=${a} und Rechteck ${a}×${b}.`,
+[{q:`Fläche Quadrat in cm²:`,a:String(a*a),e:`${a*a}`},
+{q:`Fläche Rechteck in cm²:`,a:String(a*b),e:`${a*b}`},
+{q:`Um wie viel cm² größer ist das Quadrat?`,a:String(a*a-a*b),e:`${a*a} − ${a*b} = ${a*a-a*b}`}],
+`Flächen vergleichen.`,'Formeln anwenden.');}
+}}
+}},
+k8:{name:"Prismen",icon:"📦",unter:{
+u1:{name:"Eigenschaften gerader Prismen",
+e:`<h3>Eigenschaften gerader Prismen</h3>
+<p>Ein gerades Prisma hat zwei gleiche, parallele Grundflächen und lauter Rechtecke als Seitenflächen.</p>
+<p>Wichtige Formeln:</p>
+<ul style="margin:8px 0 8px 20px">
+<li><b>Mantelfläche M</b> = Umfang der Grundfläche · Höhe</li>
+<li><b>Oberfläche O</b> = 2 · Grundfläche + Mantel</li>
+<li><b>Volumen V</b> = Grundfläche · Höhe</li>
+</ul>
+<div class="beispiel"><b>Beispiele:</b> Würfel, Quader, dreieckiges Prisma (z. B. ein Toblerone-Paket), Zylinder (als Sonderfall).</div>`,
+gen:{
+einstieg:(i)=>{const fig=pick([['Würfel','Quadrat'],['Quader','Rechteck'],['Zylinder','Kreis'],['Prisma mit Dreieck','Dreieck']]);return MC(`Grundfläche eines <b>${fig[0]}</b>?`,fig[1],['Quadrat','Rechteck','Dreieck','Kreis','Fünfeck'].filter(x=>x!==fig[1]).slice(0,3),`${fig[0]}: ${fig[1]}.`,'Grundfläche = Figur unten.');},
+grundlagen:(i)=>{const G=ri(5,25),h=ri(3,12);return F(`Prisma G=${G} cm², h=${h}. V in cm³:`,G*h,`${G*h}.`,'V = G·h.');},
+fortgeschritten:(i)=>{const G=ri(8,25),u=ri(10,30),h=ri(3,10);return F(`Prisma G=${G}, u=${u}, h=${h}. O in cm²:`,2*G+u*h,`M=${u*h}, O=${2*G+u*h}.`,'O = 2G+M.');},
+experten:(i)=>{const n=ri(3,10);return F(`Wie viele Kanten hat ein ${n}-eckiges Prisma?`,3*n,`3·${n} = ${3*n}.`,'3n Kanten.');},
+multistep:(i)=>{const G=ri(10,30),u=ri(12,30),h=ri(4,10);return MS(`Prisma mit Grundfläche G=${G} cm², Umfang u=${u} cm, Höhe h=${h} cm.`,
+[{q:`Mantelfläche M in cm²:`,a:String(u*h),e:`u·h = ${u*h}`},
+{q:`Oberfläche O in cm²:`,a:String(2*G+u*h),e:`2·${G}+${u*h} = ${2*G+u*h}`},
+{q:`Volumen V in cm³:`,a:String(G*h),e:`${G*h}`},
+{q:`Einheit von V im Alltag (Liter bei dm³): wenn G in dm², V in dm³ = Liter — wie viel Liter bei G·h?`,a:String(G*h),e:`${G*h} Liter`}],
+`Prisma: M, O, V kombiniert.`,'M=u·h, O=2G+M, V=G·h.');}
+}},
+u2:{name:"Netze und Oberfläche",
+e:`<h3>Netze und Oberfläche</h3>
+<p>Ein <b>Netz</b> ist die aufgeklappte Oberfläche eines Körpers. Beim Würfel besteht das Netz aus 6 gleichen Quadraten.</p>
+<p>Oberflächenformeln:</p>
+<ul style="margin:8px 0 8px 20px">
+<li>Würfel: O = 6 · a²</li>
+<li>Quader: O = 2 · (a·b + a·c + b·c)</li>
+</ul>
+<div class="beispiel">Stell dir vor, du packst ein Geschenk ein – die Fläche des Papiers ist ungefähr die Oberfläche des Quaders.</div>`,
+gen:{
+einstieg:(i)=>{return MC(`Wie viele gleich große Flächen hat ein <b>Würfelnetz</b>?`,'6',['4','8','12'],'6 Quadrate.');},
+grundlagen:(i)=>{const a=ri(2,8);return F(`Würfel a=${a}. O in cm²:`,6*a*a,`6·${a}² = ${6*a*a}.`,'O = 6a².');},
+fortgeschritten:(i)=>{const a=ri(2,6),b=ri(2,8),c=ri(2,6);return F(`Quader ${a}×${b}×${c}. O in cm²:`,2*(a*b+a*c+b*c),`2(ab+ac+bc) = ${2*(a*b+a*c+b*c)}.`,'O = 2(ab+ac+bc).');},
+experten:(i)=>{const a=ri(2,10);return F(`Würfel O=${6*a*a} cm². a = ? cm`,a,`6a² = ${6*a*a} → a = ${a}.`,'Umstellen.');},
+multistep:(i)=>{const a=ri(3,8),b=ri(2,6),c=ri(2,5);return MS(`Quader ${a}×${b}×${c} cm.`,
+[{q:`Fläche vorne/hinten (a·b) in cm²:`,a:String(a*b),e:`${a*b}`},
+{q:`Fläche oben/unten (a·c) in cm²:`,a:String(a*c),e:`${a*c}`},
+{q:`Fläche links/rechts (b·c) in cm²:`,a:String(b*c),e:`${b*c}`},
+{q:`Oberfläche O in cm²:`,a:String(2*(a*b+a*c+b*c)),e:`2·(${a*b}+${a*c}+${b*c}) = ${2*(a*b+a*c+b*c)}`}],
+`Quader-Oberfläche Schritt für Schritt.`,'O = 2(ab+ac+bc).');}
+}},
+u3:{name:"Volumen und Raummaße",
+e:`<h3>Volumen und Raummaße</h3>
+<p>Wichtige Umrechnungen:</p>
+<ul style="margin:8px 0 8px 20px">
+<li>1 dm³ = 1 Liter</li>
+<li>1 m³ = 1000 Liter</li>
+<li>1 cm³ = 1 ml</li>
+<li>1 dm³ = 1000 cm³</li>
+</ul>
+<div class="beispiel"><b>Praxis:</b> Ein Aquarium 40 cm × 20 cm × 25 cm hat ein Volumen von 20 000 cm³ = 20 Liter.</div>
+<p>Merke dir den Faktor 1000 zwischen den Einheiten (mm³ → cm³ → dm³ → m³).</p>`,
+gen:{
+einstieg:(i)=>{const v=ri(2,20);return F(`Wie viel Liter sind ${v} dm³?`,v,`${v} L.`,'dm³ = L.');},
+grundlagen:(i)=>{const v=ri(1,9);return F(`Wie viel Liter sind ${v} m³?`,v*1000,`${v*1000} L.`,'·1000.');},
+fortgeschritten:(i)=>{const a=ri(2,6),b=ri(2,6),c=ri(2,6);return F(`Quader ${a}×${b}×${c} dm. Volumen in Liter:`,a*b*c,`${a*b*c} L.`,'dm³ = L.');},
+experten:(i)=>{const a=ri(4,10)*10,b=ri(2,5)*10,c=ri(2,5)*10;return F(`Aquarium ${a}×${b}×${c} cm. In Liter:`,a*b*c/1000,`${a*b*c/1000} L.`,'cm³→L: :1000.');},
+multistep:(i)=>{const a=ri(4,10),b=ri(3,7),c=ri(2,5);return MS(`Quader ${a} dm × ${b} dm × ${c} dm.`,
+[{q:`Volumen in dm³:`,a:String(a*b*c),e:`${a*b*c}`},
+{q:`Volumen in Liter:`,a:String(a*b*c),e:`dm³ = L → ${a*b*c} L`},
+{q:`Volumen in cm³:`,a:String(a*b*c*1000),e:`1 dm³ = 1000 cm³ → ${a*b*c*1000} cm³`},
+{q:`Volumen in m³ (4 Dezimalen):`,a:(a*b*c/1000).toFixed(4),e:`1 m³ = 1000 dm³ → ${(a*b*c/1000).toFixed(4)} m³`}],
+`Raummaße umrechnen.`,'Faktor 1000 zwischen Einheiten.');}
+}},
+u4:{name:"Anwendungen",
+e:`<h3>Anwendungen von Prismen</h3>
+<p>Volumen und Oberfläche brauchst du ständig:</p>
+<ul style="margin:8px 0 8px 20px">
+<li>Wie viel Wasser passt in ein Becken?</li>
+<li>Wie viel Karton brauche ich für eine Schachtel?</li>
+<li>Wie viel Beton für ein Fundament?</li>
+</ul>
+<div class="beispiel">Ein Schwimmbecken 10 m × 5 m × 1,5 m fasst 75 m³ = 75 000 Liter Wasser.</div>
+<p>Immer auf die Einheiten achten (cm, dm oder m)!</p>`,
+gen:{
+einstieg:(i)=>{const a=ri(2,10),b=ri(2,8),c=ri(2,6);return F(`Schachtel ${a}×${b}×${c} cm. V in cm³:`,a*b*c,`${a*b*c}.`,'L·B·H.');},
+grundlagen:(i)=>{const a=ri(5,25),b=ri(3,12),c=ri(1,4);return F(`Becken ${a}×${b}×${c} m. V in m³:`,a*b*c,`${a*b*c} m³.`,'Gleiche Einheiten.');},
+fortgeschritten:(i)=>{const G=ri(3,20),h=ri(2,10);return F(`Prisma G=${G} m², h=${h} m. V in m³:`,G*h,`${G*h}.`,'V = G·h.');},
+experten:(i)=>{const a=ri(2,10);return F(`Würfel V=${a*a*a} cm³. a = ? cm`,a,`a³ = ${a*a*a} → a = ${a}.`,'Dritte Wurzel.');},
+multistep:(i)=>{const a=ri(10,25),b=ri(5,12),c=ri(2,5);return MS(`Schwimmbecken ${a} m × ${b} m × ${c} m.`,
+[{q:`Volumen in m³:`,a:String(a*b*c),e:`${a*b*c}`},
+{q:`Volumen in Liter:`,a:String(a*b*c*1000),e:`${a*b*c*1000} L`},
+{q:`Wie viel Wasser passt rein, wenn es nur zu 80 % gefüllt wird? (in m³)`,a:(0.8*a*b*c).toFixed(0),e:`0,8·${a*b*c} = ${(0.8*a*b*c).toFixed(0)}`}],
+`Becken-Aufgabe in mehreren Schritten.`,'V = a·b·c, dann Umrechnung.');}
+}}
+}}
+}},
+b3:{name:"Variablen und Funktionen",icon:"⚖️",kapitel:{
+k9:{name:"Gleichungen und Formeln",icon:"🟰",unter:{
+u1:{name:"Terme aufstellen",
+e:`<h3>Terme aufstellen</h3>
+<p>Ein Term ist ein Rechenausdruck mit Zahlen und Variablen (Buchstaben).</p>
+<ul style="margin:8px 0 8px 20px">
+<li>„das n-fache“ → n · x oder nx</li>
+<li>„vermehrt um“ → plus</li>
+<li>„vermindert um“ → minus</li>
+<li>„Summe aus … und …“ → plus</li>
+</ul>
+<div class="beispiel"><b>Beispiel:</b> „Das 3-fache einer Zahl x vermehrt um 5“ → 3x + 5</div>
+<p>Achte auf die Reihenfolge und setze keine unnötigen Leerzeichen, wenn du den Term eingibst.</p>`,
+gen:{
+einstieg:(i)=>{const n=ri(2,9);return MC(`Was bedeutet „das <b>${n}-fache</b> einer Zahl x“?`,`${n}x`,[`x+${n}`,`x^${n}`,`x:${n}`],`${n}·x.`,'n-fache = n·x.');},
+grundlagen:(i)=>{const n=ri(2,15);return F(`Term: „x vermindert um ${n}“`,`x-${n}`,`x − ${n}.`,'vermindert = minus.');},
+fortgeschritten:(i)=>{const n=ri(2,9),m=ri(2,9);return F(`Term: „${n}-fache von x vermehrt um ${m}“`,`${n}x+${m}`,`${n}x + ${m}.`,'Reihenfolge.');},
+experten:(i)=>{const n=ri(2,9),m=ri(2,9);return F(`Term: „Summe aus ${n}-fachem von x und ${m}-fachem von y“`,`${n}x+${m}y`,`${n}x + ${m}y.`,'Mehrere Variablen.');},
+multistep:(i)=>{const n=ri(2,7);return MS(`Übersetze in einen Term: <i>„Bilde das ${n}-fache einer Zahl x und vermindere um 5.“</i>`,
+[{q:`Term (ohne Leerzeichen):`,a:`${n}x-5`,e:`${n}x − 5`,alt:[`${n}x - 5`,`${n}*x-5`]},
+{q:`Setze x = 4 ein. Ergebnis?`,a:String(n*4-5),e:`${n}·4 − 5 = ${n*4-5}`},
+{q:`Setze x = 10 ein. Ergebnis?`,a:String(n*10-5),e:`${n*10-5}`}],
+`Term aufstellen und auswerten.`,'Koeffizient vor der Variablen.');}
+}},
+u2:{name:"Lineare Gleichungen lösen",
+e:`<h3>Lineare Gleichungen lösen</h3>
+<p>Bei einer linearen Gleichung willst du herausfinden, welche Zahl für x eingesetzt werden muss, damit die Gleichung stimmt.</p>
+<p>Du benutzt immer die <b>Umkehroperation</b>:</p>
+<ul style="margin:8px 0 8px 20px">
+<li>+ wird zu −</li>
+<li>− wird zu +</li>
+<li>· wird zu :</li>
+<li>: wird zu ·</li>
+</ul>
+<div class="beispiel"><b>Beispiel:</b> 3x + 4 = 19<br>
+3x = 15 (minus 4)<br>
+x = 5 (geteilt durch 3)</div>
+<p>Mach am Ende immer eine Probe!</p>`,
+gen:{
+einstieg:(i)=>{const x=ri(1,20),a=ri(1,20);return F(`x + ${a} = ${x+a}. x = ?`,x,`x = ${x}.`,'Umkehrung −.');},
+grundlagen:(i)=>{const x=ri(1,15),a=ri(2,9);return F(`${a}x = ${a*x}. x = ?`,x,`x = ${x}.`,'Umkehrung :.');},
+fortgeschritten:(i)=>{const x=ri(1,15),a=ri(2,9),b=ri(1,20);return F(`${a}x + ${b} = ${a*x+b}. x = ?`,x,`x = ${x}.`,'Erst −, dann :.');},
+experten:(i)=>{const x=ri(1,10),a=ri(3,7),b=ri(1,10),c=ri(1,a-1),d=ri(1,20);return F(`${a}x − ${b} = ${c}x + ${d}. x = ?`,x,`(${a}−${c})x = ${d}+${b} → x = ${x}.`,'Variablen trennen.');},
+multistep:(i)=>{const x=ri(2,10),a=ri(2,5),b=ri(1,15);return MS(`Löse <b>${a}x + ${b} = ${a*x+b}</b> schrittweise.`,
+[{q:`Subtrahiere ${b}: ${a}x = ?`,a:String(a*x),e:`${a*x}`},
+{q:`Dividiere durch ${a}: x = ?`,a:String(x),e:`x = ${x}`},
+{q:`Probe: ${a}·x + ${b} = ?`,a:String(a*x+b),e:`${a*x+b}`}],
+`Gleichung lösen mit Probe.`,'Erst +/−, dann ·/:');}
+}},
+u3:{name:"Gleichungen aus Textaufgaben",
+e:`<h3>Gleichungen aus Textaufgaben</h3>
+<p>So gehst du vor:</p>
+<ol style="margin:8px 0 8px 20px">
+<li>Variable festlegen (z. B. x = die gesuchte Zahl)</li>
+<li>Den Text in eine Gleichung übersetzen</li>
+<li>Die Gleichung lösen</li>
+<li>Probe machen und die Antwort im Satz formulieren</li>
+</ol>
+<div class="beispiel"><b>Beispiel:</b> „Das 4-fache einer Zahl vermehrt um 6 ergibt 30.“<br>
+4x + 6 = 30 → x = 6</div>`,
+gen:{
+einstieg:(i)=>{const x=ri(1,15),a=ri(2,15);return F(`x vermehrt um ${a} ergibt ${x+a}. x = ?`,x,`x = ${x}.`,'Wort → Gleichung.');},
+grundlagen:(i)=>{const x=ri(2,12),a=ri(2,9);return F(`Das ${a}-fache einer Zahl ist ${a*x}. x = ?`,x,`x = ${x}.`,'n-fache → n·x.');},
+fortgeschritten:(i)=>{const x=ri(3,12),a=ri(2,6),b=ri(2,10);return F(`Das ${a}-fache einer Zahl vermehrt um ${b} ergibt ${a*x+b}. x = ?`,x,`${a}x+${b}=${a*x+b} → x=${x}.`,'Schrittweise.');},
+experten:(i)=>{const v=ri(30,45),s=ri(5,12);const x=v-2*s;return F(`Vater ${v}, Sohn ${s}. In wie vielen Jahren ist der Vater doppelt so alt?`,x,`${v}+x = 2(${s}+x) → x = ${x}.`,'Beide +x.');},
+multistep:(i)=>{const x=ri(3,10),a=ri(2,5),b=ri(2,15);return MS(`Löse die Textaufgabe: <i>„Das ${a}-fache einer Zahl vermehrt um ${b} ergibt ${a*x+b}.“</i>`,
+[{q:`Gleichung (z.B. 3x+5=20):`,a:`${a}x+${b}=${a*x+b}`,e:`${a}x + ${b} = ${a*x+b}`,alt:[`${a}x + ${b} = ${a*x+b}`]},
+{q:`${a}x = ?`,a:String(a*x),e:`${a*x}`},
+{q:`x = ?`,a:String(x),e:`x = ${x}`},
+{q:`Probe: ${a}·x+${b} = ?`,a:String(a*x+b),e:`${a*x+b}`}],
+`Textaufgabe systematisch lösen.`,'Variable einführen.');}
+}},
+u4:{name:"Formeln umformen",
+e:`<h3>Formeln umformen</h3>
+<p>Manchmal kennst du die Formel, brauchst aber eine andere Größe. Dann löst du die Formel nach der gesuchten Größe auf – genau wie bei Gleichungen mit Umkehroperationen.</p>
+<div class="beispiel"><b>Beispiele:</b><br>
+A = a · b → b = A / a<br>
+V = G · h → G = V / h<br>
+A = (a+c)/2 · h → a = 2A/h − c</div>
+<p>Schreibe jeden Schritt auf, dann verlierst du nicht den Überblick.</p>`,
+gen:{
+einstieg:(i)=>{return F(`A = a·b. Löse nach b: b = A/?`,'a','b = A/a.','Umkehroperation.');},
+grundlagen:(i)=>{return F(`U = 2(a+b). Nach b: b = U/2 − ?`,'a','b = U/2 − a.');},
+fortgeschritten:(i)=>{return F(`A = (a+c)/2·h. Nach a: a = 2A/h − ?`,'c','a = 2A/h − c.');},
+experten:(i)=>{return F(`V = G·h. Nach G: G = V/?`,'h','G = V/h.');},
+multistep:(i)=>{const A=ri(20,60),h=ri(2,8);const a=A/h;return MS(`Trapez: A = ${A} cm², h = ${h} cm, c = 0 cm (Dreieck).`,
+[{q:`Formel nach a umgestellt: a = ?`,a:'2A/h',e:'a = 2A/h',alt:['2*A/h','2A/h']},
+{q:`a in cm:`,a:String(2*a),e:`2·${A}/${h} = ${2*a}`},
+{q:`Überprüfe: 2A/h − 0 = a → a = ?`,a:String(2*a),e:`${2*a}`}],
+`Formel umformen und anwenden.`,'Umkehroperationen.');}
+}},
+u5:{name:"Gleichungen mit Brüchen und Dezimalzahlen",
+e:`<h3>Gleichungen mit Brüchen und Dezimalzahlen</h3>
+<p>Bei Brüchen in Gleichungen multiplizierst du am besten mit dem Nenner, um den Bruch wegzubekommen.</p>
+<p>Bei Dezimalzahlen kannst du sie als Bruch schreiben oder einfach rechnen.</p>
+<div class="beispiel"><b>Beispiel:</b> x/4 + 3 = 7<br>
+x/4 = 4<br>
+x = 16</div>
+<p>Immer zuerst die Addition/Subtraktion, dann die Multiplikation/Division.</p>`,
+gen:{
+einstieg:(i)=>{const n=ri(2,9),x=ri(1,12);return F(`x/${n} = ${x}. x = ?`,x*n,`x = ${x*n}.`,'Mit Nenner multiplizieren.');},
+grundlagen:(i)=>{const d=pick([0.2,0.4,0.5,0.25]),x=ri(2,15);return F(`${d.toString().replace('.',',')}x = ${(d*x).toFixed(2).replace('.',',')}. x = ?`,x,`x = ${x}.`,'Durch Dezimalwert.');},
+fortgeschritten:(i)=>{const n=ri(2,6),a=ri(1,9),x=ri(2,15);return F(`x/${n} + ${a} = ${x/n+a}. x = ?`,x,`x = ${x}.`,'Erst −, dann ·Nenner.');},
+experten:(i)=>{const z=ri(2,5),n=ri(z+1,7),x=ri(2,12);const b=z*x/n;return F(`(${z}/${n})x = ${b}. x = ?`,x,`x = ${b} · ${n}/${z} = ${x}.`,'Kehrwert multiplizieren.');},
+multistep:(i)=>{const n=ri(3,6),x=ri(2,12),a=ri(1,10);return MS(`Löse <b>x/${n} + ${a} = ${x/n+a}</b> schrittweise.`,
+[{q:`Subtrahiere ${a}: x/${n} = ?`,a:String(x/n),e:`${x/n}`},
+{q:`Multipliziere mit ${n}: x = ?`,a:String(x),e:`x = ${x}`},
+{q:`Probe: x/${n}+${a} = ?`,a:String(x/n+a),e:`${x/n+a}`}],
+`Gleichung mit Bruch.`,'Erst +/−, dann ·Nenner.');}
+}}
+}},
+k10:{name:"Proportionalität",icon:"📈",unter:{
+u1:{name:"Direkte Proportionalität",
+e:`<h3>Direkte Proportionalität</h3>
+<p>Bei direkter Proportionalität gilt: <b>Je mehr – desto mehr</b>. Wenn du die eine Größe verdoppelst, verdoppelt sich auch die andere.</p>
+<p>Der Graph ist eine Gerade durch den Ursprung. Der Quotient (Einheitswert) bleibt konstant.</p>
+<div class="beispiel"><b>Beispiele:</b> Preis und Menge (3 Äpfel kosten 1,50 €, 6 Äpfel kosten 3 €), Weg und Zeit bei konstanter Geschwindigkeit.</div>
+<p>Rechenweg: Erst den Einheitswert berechnen (Preis für 1 Stück), dann mit der gewünschten Menge multiplizieren.</p>`,
+gen:{
+einstieg:(i)=>{const k=ri(1,5),n1=ri(2,8),n2=ri(2,10);return F(`${n1} Stück kosten ${n1*k} €. ${n2} Stück in €:`,n2*k,`${n2}·${k} = ${n2*k}.`,'Erst Einheitswert.');},
+grundlagen:(i)=>{const k=ri(2,6),n1=ri(2,8),n2=ri(2,12);return F(`${n1} kg kosten ${n1*k} €. ${n2} kg in €:`,n2*k,`${n2*k} €.`,'Einheitswert.');},
+fortgeschritten:(i)=>{const k=ri(3,9),n1=ri(2,8),n2=ri(2,10);return F(`${n1} m kosten ${n1*k} €. ${n2} m in €:`,n2*k,`${n2*k} €.`,'Direkt proportional.');},
+experten:(i)=>{const kmh=ri(40,90),h1=ri(2,6),h2=ri(2,8);return F(`Auto: ${kmh*h1} km in ${h1} h. In ${h2} h wie viel km?`,kmh*h2,`${kmh*h2} km.`,'Gleichbleibende Geschw.');},
+multistep:(i)=>{const k=ri(2,6),n1=ri(3,8),n2=ri(2,10);return MS(`<b>${n1} kg</b> kosten <b>${n1*k} €</b>. Wie viel kosten <b>${n2} kg</b>?`,
+[{q:`Einheitspreis (1 kg) in €:`,a:String(k),e:`${n1*k} : ${n1} = ${k}`},
+{q:`${n2} kg kosten in €:`,a:String(n2*k),e:`${n2}·${k} = ${n2*k}`},
+{q:`${n2+n1} kg kosten in €:`,a:String((n1+n2)*k),e:`${(n1+n2)*k}`}],
+`Direkter Dreisatz.`,'Erst Einheitswert.');}
+}},
+u2:{name:"Indirekte Proportionalität",
+e:`<h3>Indirekte Proportionalität</h3>
+<p>Bei indirekter Proportionalität gilt: <b>Je mehr – desto weniger</b>. Das Produkt der beiden Größen bleibt konstant.</p>
+<div class="beispiel"><b>Beispiele:</b><br>
+• Mehr Arbeiter → weniger Zeit für die gleiche Arbeit<br>
+• Mehr Pumpen → weniger Zeit, um ein Becken zu leeren<br>
+• Mehr Personen → weniger Tage, bis der Vorrat aufgebraucht ist</div>
+<p>Rechenweg: Produkt der bekannten Werte bilden und durch die neue Größe teilen.</p>`,
+gen:{
+einstieg:(i)=>{const a1=ri(2,6),h1=ri(4,12),a2=a1*ri(2,3);return F(`${a1} Pumpen brauchen ${h1} h. ${a2} Pumpen brauchen ? h`,(a1*h1/a2).toFixed(2),`${(a1*h1/a2).toFixed(2)} h.`,'Produkt konstant.');},
+grundlagen:(i)=>{const a1=ri(3,8),t1=ri(6,20),a2=a1+ri(1,6);return F(`${a1} Arbeiter brauchen ${t1} Tage. ${a2} Arbeiter brauchen ? Tage`,(a1*t1/a2).toFixed(2),`${(a1*t1/a2).toFixed(2)} Tage.`,'Indirekt.');},
+fortgeschritten:(i)=>{const p1=ri(8,20),t1=ri(15,40),p2=p1+ri(5,15);return F(`Vorrat für ${p1} Personen reicht ${t1} Tage. Für ${p2} Personen ? Tage`,(p1*t1/p2).toFixed(2),`${(p1*t1/p2).toFixed(2)} Tage.`,'p·t konstant.');},
+experten:(i)=>{const m1=ri(3,10),h1=ri(4,12),h2=h1+ri(2,8);return F(`${m1} Maschinen brauchen ${h1} h. Für ${h2} h ? Maschinen`,(m1*h1/h2).toFixed(2),`${(m1*h1/h2).toFixed(2)}.`,'Produkt konstant.');},
+multistep:(i)=>{const a1=ri(3,8),t1=ri(6,15),a2=a1+ri(2,5);return MS(`<b>${a1} Arbeiter</b> brauchen <b>${t1} Tage</b>. Wie lange brauchen <b>${a2} Arbeiter</b>?`,
+[{q:`Produkt Arbeiter·Tage:`,a:String(a1*t1),e:`${a1}·${t1} = ${a1*t1}`},
+{q:`Neue Tage: Produkt : ${a2} = ?`,a:(a1*t1/a2).toFixed(2),e:`${a1*t1}/${a2} = ${(a1*t1/a2).toFixed(2)}`},
+{q:`Mehr oder weniger Zeit als vorher? (mehr/weniger)`,a:a2>a1?'weniger':'mehr',e:'Mehr Arbeiter → weniger Tage.'}],
+`Indirekter Dreisatz.`,'Produkt bleibt konstant.');}
+}},
+u3:{name:"Schlusssatzaufgaben (Dreisatz)",
+e:`<h3>Schlusssatzaufgaben (Dreisatz)</h3>
+<p>Der Dreisatz ist eine einfache Methode für proportionale Zusammenhänge:</p>
+<ol style="margin:8px 0 8px 20px">
+<li>Schluss auf die Einheit (1 Stück, 1 kg, 1 Tag …)</li>
+<li>Dann auf die gesuchte Menge schließen</li>
+</ol>
+<div class="beispiel"><b>Beispiel:</b> 4 kg kosten 12 €. Wie viel kosten 7 kg?<br>
+1 kg kostet 3 € → 7 kg kosten 21 €.</div>
+<p>Bei indirekter Proportionalität rechnest du über das Produkt.</p>`,
+gen:{
+einstieg:(i)=>{const k=ri(1,3),n1=ri(2,10),n2=ri(2,12);return F(`${n1} Brötchen kosten ${(n1*k/2).toFixed(2)} €. ${n2} in €:`,(n2*k/2).toFixed(2),`${(n2*k/2).toFixed(2)} €.`,'Schluss auf 1.');},
+grundlagen:(i)=>{const k=ri(2,5),n1=ri(2,8),n2=ri(2,12);return F(`${n1} kg kosten ${n1*k} €. ${n2} kg in €:`,n2*k,`${n2*k} €.`,'Einheit.');},
+fortgeschritten:(i)=>{const k=ri(2,6),n1=ri(2,6),n2=ri(2,8);return F(`${n1} kg kosten ${(n1*k).toFixed(2)} €. ${n2} kg in €:`,(n2*k).toFixed(2),`${(n2*k).toFixed(2)} €.`,'Dezimal.');},
+experten:(i)=>{const b1=ri(3,8),t1=ri(10,20),b2=b1+ri(2,5);return F(`${b1} Bagger brauchen ${t1} Tage. ${b2} Bagger ? Tage`,(b1*t1/b2).toFixed(2),`${(b1*t1/b2).toFixed(2)} Tage.`,'Indirekt.');},
+multistep:(i)=>{const k=ri(1,4),n1=ri(4,10),n2=ri(5,15);return MS(`Dreisatz: <b>${n1} Stück</b> kosten <b>${n1*k} €</b>. Wie viel kosten <b>${n2} Stück</b>?`,
+[{q:`Preis für 1 Stück in €:`,a:String(k),e:`${n1*k}/${n1} = ${k}`},
+{q:`Preis für ${n2} Stück in €:`,a:String(n2*k),e:`${n2*k}`},
+{q:`Preis für ${n2*2} Stück in €:`,a:String(n2*2*k),e:`${n2*2*k}`}],
+`Klassischer Dreisatz.`,'Einheitswert bestimmen.');}
+}},
+u4:{name:"Graphische Darstellung",
+e:`<h3>Graphische Darstellung</h3>
+<p><b>Direkte Proportionalität:</b> Gerade durch den Ursprung (y = k · x).</p>
+<p><b>Indirekte Proportionalität:</b> Hyperbel (y = k / x).</p>
+<div class="beispiel">Wenn du Punkte einzeichnest und sie auf einer Geraden durch (0|0) liegen, ist es direkt proportional. Liegen sie auf einer Hyperbel, ist es indirekt.</div>`,
+gen:{
+einstieg:(i)=>{return MC(`Graph direkter Proportionalität?`,'Gerade durch Ursprung',['Parabel','Hyperbel','Kreis'],'y=k·x.');},
+grundlagen:(i)=>{return MC(`Graph indirekter Proportionalität?`,'Hyperbel',['Gerade','Parabel','Kreis'],'y=k/x.');},
+fortgeschritten:(i)=>{const k=ri(2,9),x=ri(2,10);return F(`Direkt: y=${k}x. y bei x=${x}?`,k*x,`y=${k*x}.`,'Einsetzen.');},
+experten:(i)=>{const k=ri(12,60),x=pick([2,3,4,5,6]);return F(`Indirekt: y=${k}/x. y bei x=${x}?`,(k/x).toFixed(2),`y=${(k/x).toFixed(2)}.`,'k/x.');},
+multistep:(i)=>{const k=ri(2,5);return MS(`Direkte Proportionalität y = ${k}x.`,
+[{q:`y bei x=1?`,a:String(k),e:`${k}`},
+{q:`y bei x=4?`,a:String(k*4),e:`${k*4}`},
+{q:`y bei x=10?`,a:String(k*10),e:`${k*10}`},
+{q:`Für y=100, welches x? (gerundet)`,a:(100/k).toFixed(2),e:`x = 100/${k} = ${(100/k).toFixed(2)}`}],
+`Direkte Proportionalität mit mehreren Werten.`,'y = k·x.');}
+}},
+u5:{name:"Gemischte Anwendungen",
+e:`<h3>Gemischte Anwendungen zur Proportionalität</h3>
+<p>Zuerst musst du erkennen: Ist der Zusammenhang direkt oder indirekt?</p>
+<ul style="margin:8px 0 8px 20px">
+<li>Mehr – mehr → direkt</li>
+<li>Mehr – weniger → indirekt</li>
+</ul>
+<div class="beispiel"><b>Geschwindigkeit und Zeit</b> für dieselbe Strecke sind indirekt proportional: Je schneller du fährst, desto weniger Zeit brauchst du.</div>
+<p>Schreibe dir auf, welche Größe konstant bleibt (Strecke, Arbeit, Vorrat …).</p>`,
+gen:{
+einstieg:(i)=>{return MC(`„Mehr Arbeiter – weniger Zeit“ ist …`,'indirekt proportional',['direkt','nicht','zufällig'],'Mehr–weniger = indirekt.');},
+grundlagen:(i)=>{const k=ri(2,6),n1=ri(2,8),n2=ri(2,12);return F(`${n1} kg kosten ${n1*k} €. ${n2} kg €?`,n2*k,`${n2*k}.`,'Direkt.');},
+fortgeschritten:(i)=>{const v=ri(40,80),h1=ri(2,6),h2=h1+ri(1,4);return F(`Auto: ${v} km/h in ${h1} h. Für ${h2} h gleich schnell? km/h`,(v*h1/h2).toFixed(2),`${(v*h1/h2).toFixed(2)}.`,'Indirekt.');},
+experten:(i)=>{const r1=ri(2,5),h1=ri(3,10),r2=r1+ri(1,4);return F(`${r1} Röhren füllen in ${h1} h. ${r2} Röhren ? h`,(r1*h1/r2).toFixed(2),`${(r1*h1/r2).toFixed(2)}.`,'Indirekt.');},
+multistep:(i)=>{const v=ri(50,80),h1=ri(2,5);return MS(`Ein Auto fährt <b>${v} km/h</b> und braucht <b>${h1} h</b> für eine Strecke.`,
+[{q:`Strecke in km:`,a:String(v*h1),e:`${v}·${h1} = ${v*h1}`},
+{q:`Für dieselbe Strecke in ${h1+1} h: nötige Geschwindigkeit (km/h)?`,a:(v*h1/(h1+1)).toFixed(2),e:`${v*h1}/${h1+1} = ${(v*h1/(h1+1)).toFixed(2)}`},
+{q:`Für ${h1+2} h (km/h)?`,a:(v*h1/(h1+2)).toFixed(2),e:`${(v*h1/(h1+2)).toFixed(2)}`}],
+`Geschwindigkeit und Zeit sind indirekt proportional.`,'Strecke konstant.');}
+}}
+}}
+}},
+b4:{name:"Statistik",icon:"📊",kapitel:{
+k11:{name:"Statistik",icon:"📉",unter:{
+u1:{name:"Daten sammeln und ordnen",
+e:`<h3>Daten sammeln und ordnen</h3>
+<p>Eine <b>Urliste</b> enthält die Rohdaten in der Reihenfolge, wie sie aufgenommen wurden.</p>
+<p>Eine <b>Rangliste</b> ist die sortierte Liste (von klein nach groß oder umgekehrt).</p>
+<div class="beispiel"><b>Beispiel:</b> Noten: 3, 1, 4, 2, 3 → Rangliste: 1, 2, 3, 3, 4</div>
+<p>Aus der Rangliste kannst du leicht den kleinsten Wert, den größten Wert und den Median ablesen.</p>`,
+gen:{
+einstieg:(i)=>{return F(`Wie heißt die <b>sortierte</b> Liste?`,'rangliste','Rangliste.','Urliste → Rangliste.');},
+grundlagen:(i)=>{const n=ri(5,12);const a=[];for(let k=0;k<n;k++)a.push(ri(1,9));return F(`Wie viele Werte? ${a.join(', ')}`,n,`${n} Werte.`,'Zählen.');},
+fortgeschritten:(i)=>{const v=ri(1,6),c=ri(2,5),o=[];for(let k=0;k<c;k++)o.push(v);for(let k=0;k<3;k++)o.push(ri(7,9));const s=shuffle(o);return F(`Wie oft kommt <b>${v}</b> vor? ${s.join(', ')}`,c,`${c}-mal.`,'Häufigkeit.');},
+experten:(i)=>{const a=[];for(let k=0;k<8;k++)a.push(ri(1,20));a.sort((x,y)=>x-y);return F(`Median der Liste ${a.join(', ')} (1 Dezimale):`,((a[3]+a[4])/2).toFixed(1),`Mittlere zwei: ${a[3]}, ${a[4]}.`,'Bei gerader Anzahl: Mittel der Mittleren.');},
+multistep:(i)=>{const a=[];for(let k=0;k<7;k++)a.push(ri(1,15));return MS(`Datenliste: <b>${a.join(', ')}</b>`,
+[{q:`Sortierte Rangliste (Zahlen mit Komma getrennt):`,a:a.slice().sort((x,y)=>x-y).join(','),e:`${a.slice().sort((x,y)=>x-y).join(', ')}`},
+{q:`Kleinster Wert:`,a:String(Math.min(...a)),e:`${Math.min(...a)}`},
+{q:`Größter Wert:`,a:String(Math.max(...a)),e:`${Math.max(...a)}`},
+{q:`Median (4. Wert):`,a:String(a.slice().sort((x,y)=>x-y)[3]),e:`${a.slice().sort((x,y)=>x-y)[3]}`}],
+`Daten ordnen und Median.`,'Erst sortieren.');}
+}},
+u2:{name:"Häufigkeitstabellen",
+e:`<h3>Häufigkeitstabellen</h3>
+<p><b>Absolute Häufigkeit:</b> Wie oft kommt ein Wert vor? (einfach zählen)</p>
+<p><b>Relative Häufigkeit:</b> Welchen Anteil macht der Wert aus? (absolute Häufigkeit ÷ Gesamtanzahl)</p>
+<p>Die relative Häufigkeit kannst du als Bruch, Dezimalzahl oder Prozent angeben.</p>
+<div class="beispiel"><b>Beispiel:</b> In 20 Würfen kommt die 6 fünfmal vor.<br>
+Absolute Häufigkeit: 5<br>
+Relative Häufigkeit: 5/20 = 0,25 = 25 %</div>`,
+gen:{
+einstieg:(i)=>{const h=ri(1,8);return F(`Absolute Häufigkeit = ${h}. Wie viel?`,h,`${h}.`,'Anzahl.');},
+grundlagen:(i)=>{const t=ri(10,40),h=ri(1,t);return F(`${h} von ${t} → rel. Häufigkeit in % (gerundet):`,Math.round(h/t*100),`${(h/t*100).toFixed(1)} %.`,'Anteil.');},
+fortgeschritten:(i)=>{const t=ri(20,50),h=ri(1,t-1);return F(`${h} von ${t} → rel. % (1 Dezimale):`,(h/t*100).toFixed(1),`${(h/t*100).toFixed(1)}.`,'Prozent.');},
+experten:(i)=>{const t=ri(20,60),p=ri(10,60);return F(`rel. Häufigkeit ${p}%, Gesamt ${t}. Absolute Häufigkeit (gerundet):`,Math.round(t*p/100),`${t}·${p}/100 = ${Math.round(t*p/100)}.`,'abs = rel·G.');},
+multistep:(i)=>{const t=ri(20,50),h=ri(3,t-3);return MS(`Ein Wert kommt <b>${h}</b> mal in einer Stichprobe von <b>${t}</b> Werten vor.`,
+[{q:`Absolute Häufigkeit:`,a:String(h),e:`${h}`},
+{q:`Relative Häufigkeit als Bruch gekürzt (a/b):`,a:simp(h,t),e:`${h}/${t} = ${simp(h,t)}`},
+{q:`Als Dezimalwert (3 Dezimalen):`,a:(h/t).toFixed(3).replace('.',','),e:`${(h/t).toFixed(3)}`},
+{q:`In Prozent (1 Dezimale):`,a:(h/t*100).toFixed(1).replace('.',','),e:`${(h/t*100).toFixed(1)} %`}],
+`Häufigkeiten umrechnen.`,'abs → rel → %.');}
+}},
+u3:{name:"Diagramme",
+e:`<h3>Diagramme</h3>
+<p>Diagramme helfen, Daten anschaulich darzustellen.</p>
+<ul style="margin:8px 0 8px 20px">
+<li><b>Säulen- und Balkendiagramm:</b> gut für Vergleiche</li>
+<li><b>Kreisdiagramm:</b> gut für Anteile. Der Winkel = relative Häufigkeit · 360°</li>
+<li><b>Liniendiagramm:</b> gut für Entwicklungen über die Zeit</li>
+</ul>
+<div class="beispiel">25 % im Kreisdiagramm entsprechen 90° (weil 0,25 · 360 = 90).</div>`,
+gen:{
+einstieg:(i)=>{return MC(`Welches Diagramm nutzt Winkel?`,'Kreisdiagramm',['Säulen','Balken','Linien'],'Kreis = 360°.');},
+grundlagen:(i)=>{const p=pick([10,20,25,40,50,60,75]);return F(`${p}% → Winkel in °:`,p*3.6,`${p*3.6}°.`,'rel·360.');},
+fortgeschritten:(i)=>{const p=pick([5,15,30,45,55,65,80,90]);return F(`${p}% → Winkel:`,p*3.6,`${p*3.6}°.`,'Formel.');},
+experten:(i)=>{const w=pick([36,72,108,144,180,216,252,288]);return F(`${w}° im Kreis → % (gerundet):`,Math.round(w/360*100),`${Math.round(w/360*100)}%.`,'Winkel/360.');},
+multistep:(i)=>{const p=pick([15,20,25,30,40]);return MS(`Ein Anteil ist <b>${p}%</b>.`,
+[{q:`Als Bruch (gekürzt):`,a:simp(p,100),e:`${simp(p,100)}`},
+{q:`Als Dezimalzahl:`,a:(p/100).toString().replace('.',','),e:`${p/100}`},
+{q:`Winkel im Kreisdiagramm in Grad:`,a:String(p*3.6),e:`${p*3.6}°`},
+{q:`Anteil von ${p*10} Personen absolut:`,a:String(p*10*p/100),e:`${p*10}·${p}/100 = ${p*10*p/100}`}],
+`Prozent ↔ Kreisdiagramm.`,'Winkel = rel·360°.');}
+}},
+u4:{name:"Arithmetisches Mittel",
+e:`<h3>Arithmetisches Mittel</h3>
+<p>Das <b>arithmetische Mittel</b> (Durchschnitt) berechnest du so:</p>
+<p>Summe aller Werte ÷ Anzahl der Werte</p>
+<div class="beispiel"><b>Beispiel:</b> Noten 2, 3, 1, 4, 5<br>
+Summe = 15, Anzahl = 5 → Mittel = 3</div>
+<p>Das Mittel wird stark von Ausreißern (sehr hohen oder sehr niedrigen Werten) beeinflusst.</p>`,
+gen:{
+einstieg:(i)=>{const a=ri(1,20),b=ri(1,20);return F(`Mittelwert von ${a} und ${b}:`,((a+b)/2).toFixed(2),`${((a+b)/2).toFixed(2)}.`,'Summe/2.');},
+grundlagen:(i)=>{const a=ri(1,10),b=ri(1,10),c=ri(1,10);return F(`Mittel von ${a},${b},${c}:`,((a+b+c)/3).toFixed(2),`${((a+b+c)/3).toFixed(2)}.`,'Summe/3.');},
+fortgeschritten:(i)=>{const arr=[];for(let k=0;k<5;k++)arr.push(ri(1,20));const s=arr.reduce((a,b)=>a+b,0);return F(`Mittel von ${arr.join(', ')}:`,(s/5).toFixed(2),`${(s/5).toFixed(2)}.`,'Summe/5.');},
+experten:(i)=>{const n=ri(3,6),m=ri(5,20);const arr=[];let s=0;for(let k=0;k<n-1;k++){const v=ri(1,30);arr.push(v);s+=v;}return F(`${n} Werte mit Mittel ${m}. ${n-1} Werte: ${arr.join(', ')}. Fehlender Wert?`,n*m-s,`Summe=${n*m}. ${n*m}−${s}=${n*m-s}.`,'Rückwärts.');},
+multistep:(i)=>{const arr=[];for(let k=0;k<5;k++)arr.push(ri(1,20));const s=arr.reduce((a,b)=>a+b,0);return MS(`Datenliste: <b>${arr.join(', ')}</b>`,
+[{q:`Summe der Werte:`,a:String(s),e:`${arr.join('+')} = ${s}`},
+{q:`Anzahl der Werte:`,a:'5',e:'5'},
+{q:`Mittelwert (2 Dezimalen):`,a:(s/5).toFixed(2),e:`${s}/5 = ${(s/5).toFixed(2)}`},
+{q:`Wenn ein Wert 0 hinzugefügt wird – neuer Mittelwert (2 Dezimalen)?`,a:(s/6).toFixed(2),e:`${s}/6 = ${(s/6).toFixed(2)}`}],
+`Mittelwert mit Variation.`,'Summe/Anzahl.');}
+}},
+u5:{name:"Median",
+e:`<h3>Median</h3>
+<p>Der <b>Median</b> ist der mittlere Wert in der sortierten Liste.</p>
+<ul style="margin:8px 0 8px 20px">
+<li>Bei ungerader Anzahl: der Wert in der Mitte</li>
+<li>Bei gerader Anzahl: der Mittelwert der beiden mittleren Werte</li>
+</ul>
+<div class="beispiel"><b>Beispiel:</b> 1, 3, 5, 7, 100 → Median = 5 (der Ausreißer 100 stört den Median nicht)</div>
+<p>Der Median ist robuster gegen Ausreißer als das arithmetische Mittel.</p>`,
+gen:{
+einstieg:(i)=>{const a=[];for(let k=0;k<5;k++)a.push(ri(1,20));a.sort((x,y)=>x-y);return F(`Median von ${a.join(', ')}:`,a[2],`Mittlerer = ${a[2]}.`,'Sortiert ist mittlerer Wert 3.');},
+grundlagen:(i)=>{const a=[];for(let k=0;k<4;k++)a.push(ri(1,20));a.sort((x,y)=>x-y);return F(`Median von ${a.join(', ')} (1 Dezimale):`,((a[1]+a[2])/2).toFixed(1),`Mittel von ${a[1]} und ${a[2]}.`,'Mittel der Mittleren.');},
+fortgeschritten:(i)=>{const a=[];for(let k=0;k<5;k++)a.push(ri(1,30));const s=shuffle(a);const so=a.slice().sort((x,y)=>x-y);return F(`Median von ${s.join(', ')} (unsortiert):`,so[2],`Sortiert: ${so.join(', ')} → ${so[2]}.`,'Erst sortieren.');},
+experten:(i)=>{const a=[ri(1,10),ri(1,10),ri(1,10),ri(1,10),ri(50,100)].sort((x,y)=>x-y);return F(`Median mit Ausreißer: ${a.join(', ')}`,a[2],`Median = ${a[2]} (robust).`,'Median ignoriert Ausreißer.');},
+multistep:(i)=>{const a=[];for(let k=0;k<6;k++)a.push(ri(1,25));const s=a.slice().sort((x,y)=>x-y);return MS(`Datenliste (unsortiert): <b>${shuffle(a).join(', ')}</b>`,
+[{q:`Sortierte Rangliste (Zahlen mit Komma getrennt):`,a:s.join(','),e:`${s.join(', ')}`},
+{q:`3. Wert der Rangliste:`,a:String(s[2]),e:`${s[2]}`},
+{q:`4. Wert der Rangliste:`,a:String(s[3]),e:`${s[3]}`},
+{q:`Median (Mittel der beiden Mittleren, 1 Dezimale):`,a:((s[2]+s[3])/2).toFixed(1),e:`(${s[2]}+${s[3]})/2 = ${((s[2]+s[3])/2).toFixed(1)}`}],
+`Median bei gerader Anzahl.`,'Sortieren, dann Mittel der Mittleren.');}
+}},
+u6:{name:"Kennwerte interpretieren",
+e:`<h3>Kennwerte interpretieren</h3>
+<p>Mittelwert und Median beschreiben die „Mitte“ einer Datenreihe, reagieren aber unterschiedlich auf Ausreißer.</p>
+<ul style="margin:8px 0 8px 20px">
+<li><b>Mittelwert:</b> empfindlich gegenüber sehr hohen oder niedrigen Werten</li>
+<li><b>Median:</b> robuster, wird von Ausreißern weniger beeinflusst</li>
+</ul>
+<div class="beispiel">Bei Gehältern oder Hauspreisen ist der Median oft aussagekräftiger als der Mittelwert, weil ein paar sehr reiche Personen den Durchschnitt stark nach oben ziehen.</div>`,
+gen:{
+einstieg:(i)=>{return MC(`Welcher Kennwert ist robuster?`,'Median',['Mittel','Summe','Maximum'],'Median wird weniger verzerrt.');},
+grundlagen:(i)=>{const a=[ri(1,5),ri(2,5),ri(3,6),ri(4,7),100];const s=a.reduce((x,y)=>x+y,0);return F(`Mittel von ${a.join(', ')} (1 Dezimale):`,(s/5).toFixed(1),`${(s/5).toFixed(1)}.`,'Summe/5.');},
+fortgeschritten:(i)=>{const a=[ri(1,5),ri(2,6),ri(3,7),ri(4,8),100].sort((x,y)=>x-y);return F(`Median von ${a.join(', ')}:`,a[2],`${a[2]}.`,'Mittlerer.');},
+experten:(i)=>{const base=[ri(5,10),ri(5,10),ri(5,10),ri(5,10),100];const s=base.reduce((x,y)=>x+y,0);const so=base.slice().sort((x,y)=>x-y);return F(`Mittel − Median bei ${base.join(', ')} (2 Dezimalen):`,(s/5-so[2]).toFixed(2),`${(s/5-so[2]).toFixed(2)}.`,'Ausreißer → große Differenz.');},
+multistep:(i)=>{const base=[ri(5,10),ri(5,10),ri(5,10),ri(5,10),100];const s=base.reduce((x,y)=>x+y,0);const so=base.slice().sort((x,y)=>x-y);return MS(`Werte: <b>${base.join(', ')}</b>`,
+[{q:`Summe:`,a:String(s),e:`${s}`},
+{q:`Mittelwert (2 Dezimalen):`,a:(s/5).toFixed(2),e:`${(s/5).toFixed(2)}`},
+{q:`Median:`,a:String(so[2]),e:`${so[2]}`},
+{q:`Differenz Mittel − Median (2 Dezimalen):`,a:(s/5-so[2]).toFixed(2),e:`${(s/5-so[2]).toFixed(2)}`}],
+`Mittelwert vs Median bei Ausreißer.`,'Median robuster.');}
+}}
+}}
+}}
+};
+
+/* ============ STATE ============ */
+const KEY='mathe2_v3';
+let S=load();
+function defaults(){return{xp:0,level:1,streak:0,totalCorrect:0,totalAnswered:0,prog:{},cur:{}};}
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||defaults();}catch(e){return defaults();}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+/* ============ RENDER HOME ============ */
+const main=document.getElementById('main');
+
+function renderHome(){
+  let h='<h2 class="section-title">Wähle einen Bereich</h2><p class="section-sub">Insgesamt 11 Kapitel · 52 Unterkapitel · 6.240+ Aufgaben</p><div class="grid grid-2">';
+  for(const [bid,b] of Object.entries(C)){
+    const st=getBereichStat(bid);
+    h+=`<div class="card ${st.done===st.total&&st.total>0?'done':''}" onclick="openBereich('${bid}')">
+    <div class="badge">${st.done}/${st.total}</div>
+    <h3>${b.icon} ${b.name}</h3><div class="sub">${Object.keys(b.kapitel).length} Kapitel</div></div>`;
+  }
+  h+='</div>';
+  main.innerHTML=h;updateStats();updateProgressMini();
+}
+
+function renderBereich(bid){
+  const b=C[bid];
+  let h=`<div class="breadcrumb" onclick="renderHome()"><span>🏠 Start</span> › ${b.name}</div>`;
+  h+=`<h2 class="section-title">${b.icon} ${b.name}</h2><div class="grid">`;
+  for(const [kid,k] of Object.entries(b.kapitel)){
+    const st=getKapitelStat(bid,kid);
+    h+=`<div class="card ${st.done===st.total&&st.total>0?'done':''}" onclick="openKapitel('${bid}','${kid}')">
+    <div class="badge">${st.done}/${st.total}</div>
+    <h3>${k.icon} ${k.name}</h3><div class="sub">${Object.keys(k.unter).length} Unterkapitel</div></div>`;
+  }
+  h+='</div>';main.innerHTML=h;updateStats();updateProgressMini();
+}
+
+function renderKapitel(bid,kid){
+  const b=C[bid],k=b.kapitel[kid];
+  let h=`<div class="breadcrumb"><span onclick="renderHome()">🏠 Start</span> › <span onclick="openBereich('${bid}')">${b.name}</span> › ${k.name}</div>`;
+  h+=`<h2 class="section-title">${k.icon} ${k.name}</h2><div class="grid">`;
+  for(const [uid,u] of Object.entries(k.unter)){
+    const st=getUnterStat(bid,kid,uid);
+    h+=`<div class="card ${st.done===st.total&&st.total>0?'done':''}" onclick="openUnter('${bid}','${kid}','${uid}')">
+    <div class="badge">${st.done}/${st.total}</div>
+    <h3>${u.name}</h3><div class="sub">120 Aufg. + 8 Multi-Step</div></div>`;
+  }
+  h+=`<div class="card" style="border-color:#a855f7;background:linear-gradient(135deg,#faf5ff,#f3e8ff)" onclick="startGame('${bid}','${kid}')">
+    <div class="badge" style="background:#a855f7;color:#fff">Spiel</div>
+    <h3>🎮 Lernspiel</h3><div class="sub">Schnelles Quiz mit Extra-XP!</div></div>`;
+  h+='</div>';main.innerHTML=h;updateStats();updateProgressMini();
+}
+
+function renderUnter(bid,kid,uid){
+  const b=C[bid],k=b.kapitel[kid],u=k.unter[uid];
+  let h=`<div class="breadcrumb"><span onclick="renderHome()">🏠 Start</span> › <span onclick="openBereich('${bid}')">${b.name}</span> › <span onclick="openKapitel('${bid}','${kid}')">${k.name}</span> › ${u.name}</div>`;
+  h+=`<h2 class="section-title">${u.name}</h2><p class="section-sub">Wähle Stufe – jede Stufe hat 30 Aufgaben</p>`;
+  h+=`<div class="erklaerung-box">${u.e}</div><div class="level-grid">`;
+  const lv=[
+    {k:'einstieg',n:'Einstieg',d:'Erste Übungen – einfach'},
+    {k:'grundlagen',n:'Grundlagen',d:'Standardaufgaben'},
+    {k:'fortgeschritten',n:'Fortgeschritten',d:'Mehrere Schritte'},
+    {k:'experten',n:'Experten',d:'Knifflig – Transfer'}
+  ];
+  for(const l of lv){
+    const st=S.prog[`${bid}.${kid}.${uid}.${l.k}`]||{done:0};
+    const done=st.done>=30;
+    h+=`<button class="level-btn ${l.k}" onclick="openLevel('${bid}','${kid}','${uid}','${l.k}')">
+    <span class="lv">${done?'✅ ':''}${l.n} <small style="color:#6c757d;font-weight:400">(30 Aufg.)</small></span>
+    <span class="lvd">${l.d}</span></button>`;
+  }
+  const stMS=S.prog[`${bid}.${kid}.${uid}.multistep`]||{done:0};
+  h+=`<button class="level-btn multistep" onclick="openLevel('${bid}','${kid}','${uid}','multistep')">
+  <span class="lv">${stMS.done>=8?'✅ ':''}🎯 Multi-Step-Aufgaben <small style="color:#7c3aed;font-weight:400">(8 Aufg. mit 3-5 Schritten)</small></span>
+  <span class="lvd">Mehrstufige Aufgaben – jeder Schritt einzeln geprüft</span></button>`;
+  h+=`</div><div class="btn-row"><button class="btn btn-secondary" onclick="openKapitel('${bid}','${kid}')">← Zurück</button></div>`;
+  main.innerHTML=h;updateStats();updateProgressMini();
+}
+
+function lvLabel(l){return{einstieg:'Einstieg',grundlagen:'Grundlagen',fortgeschritten:'Fortgeschritten',experten:'Experten',multistep:'Multi-Step'}[l];}
+function typeLabel(t){return{mc:'Multiple Choice',fill:'Lückentext',multi:'Multi-Step'}[t];}
+
+function renderQuestion(bid,kid,uid,lvk,idx,stepIdx,keepResults){
+  const u=C[bid].kapitel[kid].unter[uid];
+  const tasks=getTasks(bid,kid,uid,lvk);
+  const q=tasks[idx];
+  if(!q){openUnter(bid,kid,uid);return;}
+  const prev = (keepResults && S.cur && S.cur.bereich===bid && S.cur.kapitel===kid && S.cur.unter===uid && S.cur.level===lvk && S.cur.index===idx) ? (S.cur.stepResults||[]) : [];
+  S.cur={bereich:bid,kapitel:kid,unter:uid,level:lvk,index:idx,answered:false,matched:[],sel:null,stepIdx:stepIdx||0,stepResults:prev};
+  save();
+  const b=C[bid],k=b.kapitel[kid];
+  let h=`<div class="breadcrumb"><span onclick="renderHome()">🏠</span> › <span onclick="openBereich('${bid}')">${b.name}</span> › <span onclick="openKapitel('${bid}','${kid}')">${k.name}</span> › <span onclick="openUnter('${bid}','${kid}','${uid}')">${u.name}</span> › ${lvLabel(lvk)}</div>`;
+  h+=`<div class="q-card">`;
+  h+=`<span class="q-type t-${q.t}">${typeLabel(q.t)}</span>`;
+  h+=`<span class="q-level">Aufgabe ${idx+1}/${tasks.length} · ${lvLabel(lvk)}</span>`;
+  h+=`<div style="clear:both"></div>`;
+  
+  if(q.t==='multi'){
+    const si=stepIdx||0;
+    const total=q.steps.length;
+    h+=`<div class="step-counter">Schritt ${si+1} von ${total}</div>`;
+    h+=`<div class="step-bar">`;
+    for(let k2=0;k2<total;k2++){
+      const cls=k2<si?'done':k2===si?'active':'';
+      h+=`<div class="step-dot ${cls}"></div>`;
+    }
+    h+=`</div>`;
+    if(S.cur.stepResults && S.cur.stepResults.length>0){
+      h+=`<div class="prev-steps">`;
+      S.cur.stepResults.forEach((r,i)=>{
+        h+=`<div class="prev-step">✓ Schritt ${i+1}: <b>${r.a}</b></div>`;
+      });
+      h+=`</div>`;
+    }
+    h+=`<div class="q-text">${q.f}</div>`;
+    h+=`<div class="q-text" style="color:#7c3aed">${q.steps[si].q}</div>`;
+    h+=`<div class="hint-row"><button class="btn btn-secondary" style="padding:8px 14px;font-size:.85em" onclick="showHint()">💡 Hinweis (-3 XP)</button></div><div class="hint-box" id="hintBox"></div>`;
+    h+=`<div class="fill-row"><input type="text" id="fillIn" placeholder="Antwort..." autocomplete="off"><button class="btn btn-primary" onclick="checkMulti()">Prüfen</button></div>`;
+  } else {
+    h+=`<div class="q-text">${q.f}</div>`;
+    if(q.t==='mc'){
+      h+=`<div class="options" id="opts">`;
+      q.o.forEach((o,i)=>{h+=`<button class="opt" data-i="${i}" onclick="checkMC(${i},${q.r})">${o}</button>`;});
+      h+=`</div>`;
+    } else if(q.t==='fill'){
+      h+=`<div class="hint-row"><button class="btn btn-secondary" style="padding:8px 14px;font-size:.85em" onclick="showHint()">💡 Hinweis (-3 XP)</button></div><div class="hint-box" id="hintBox"></div>`;
+      h+=`<div class="fill-row"><input type="text" id="fillIn" placeholder="Antwort..." autocomplete="off"><button class="btn btn-primary" onclick="checkFill()">Prüfen</button></div>`;
+    }
+  }
+  h+=`<div class="feedback" id="fb"></div><div class="btn-row" id="btns">`;
+  h+=`<button class="btn btn-secondary" onclick="openUnter('${bid}','${kid}','${uid}')">← Abbrechen</button>`;
+  h+=`</div></div>`;
+  main.innerHTML=h;
+  if(q.t!=='mc'){
+    const inp=document.getElementById('fillIn');
+    if(inp){
+      inp.focus();
+      inp.addEventListener('keydown',e=>{
+        if(e.key==='Enter'){
+          if(q.t==='multi')checkMulti();else checkFill();
+        }
+      });
+    }
+  }
+  updateStats();
+}
+
+/* ============ ACTIONS ============ */
+function openBereich(b){renderBereich(b);}
+function openKapitel(b,k){renderKapitel(b,k);}
+function openUnter(b,k,u){renderUnter(b,k,u);}
+function openLevel(b,k,u,lv){renderQuestion(b,k,u,lv,0,0);}
+
+function checkMC(i,correct){
+  if(S.cur.answered)return;S.cur.answered=true;
+  const opts=document.querySelectorAll('.opt');
+  opts.forEach((o,j)=>{
+    o.classList.add('dis');
+    if(j===correct)o.classList.add('correct');
+    if(j===i&&i!==correct)o.classList.add('wrong');
+  });
+  const q=getTasks(S.cur.bereich,S.cur.kapitel,S.cur.unter,S.cur.level)[S.cur.index];
+  handleResult(i===correct,q.e,q.regel||'');
+}
+
+function checkFill(){
+  if(S.cur.answered)return;
+  const inp=document.getElementById('fillIn');
+  const val=inp.value||'';
+  if(!val.trim())return;
+  S.cur.answered=true;
+  const q=getTasks(S.cur.bereich,S.cur.kapitel,S.cur.unter,S.cur.level)[S.cur.index];
+  const ok=answersMatch(val, q.a, q.alt);
+  inp.classList.add(ok?'correct':'wrong');
+  inp.disabled=true;
+  handleResult(ok,q.e,q.regel||'');
+}
+
+function checkMulti(){
+  if(S.cur.answered)return;
+  const inp=document.getElementById('fillIn');
+  const val=inp.value||'';
+  if(!val.trim())return;
+  const q=getTasks(S.cur.bereich,S.cur.kapitel,S.cur.unter,S.cur.level)[S.cur.index];
+  const step=q.steps[S.cur.stepIdx];
+  const ok=answersMatch(val, step.a, step.alt);
+  
+  S.cur.answered=true;
+  inp.classList.add(ok?'correct':'wrong');
+  inp.disabled=true;
+  
+  const fb=document.getElementById('fb');
+  const btns=document.getElementById('btns');
+  
+  if(ok){
+    S.cur.stepResults.push({a:step.a});
+    addXP(5);
+    fb.className='feedback correct show';
+    fb.innerHTML=`<strong>✅ Schritt ${S.cur.stepIdx+1} richtig! (+5 XP)</strong>${step.e}${step.regel?`<div class="regel">${step.regel}</div>`:''}`;
+    const isLast=S.cur.stepIdx>=q.steps.length-1;
+    btns.innerHTML='';
+    const bBtn=document.createElement('button');
+    bBtn.className='btn btn-secondary';
+    bBtn.textContent='← Abbrechen';
+    bBtn.onclick=()=>openUnter(S.cur.bereich,S.cur.kapitel,S.cur.unter);
+    btns.appendChild(bBtn);
+    if(isLast){
+      S.streak++;S.totalCorrect++;S.totalAnswered++;
+      addXP(10);
+      const pk=`${S.cur.bereich}.${S.cur.kapitel}.${S.cur.unter}.multistep`;
+      if(!S.prog[pk])S.prog[pk]={done:0};
+      S.prog[pk].done=Math.max(S.prog[pk].done,S.cur.index+1);
+      save();
+      let sumHtml=`<div class="summary"><h3>🎉 Alle Schritte geschafft!</h3>`;
+      q.steps.forEach((st,i)=>{sumHtml+=`<div class="sum-step">Schritt ${i+1}: <b>${S.cur.stepResults[i].a}</b></div>`;});
+      sumHtml+=`<div style="margin-top:10px">${q.e||''}</div></div>`;
+      fb.innerHTML+=sumHtml;
+      const nBtn=document.createElement('button');
+      nBtn.className='btn btn-primary';
+      nBtn.textContent=S.cur.index<getTasks(S.cur.bereich,S.cur.kapitel,S.cur.unter,'multistep').length-1?'Nächste Multi-Step →':'🎉 Zur Übersicht';
+      nBtn.onclick=()=>{
+        if(S.cur.index<getTasks(S.cur.bereich,S.cur.kapitel,S.cur.unter,'multistep').length-1)renderQuestion(S.cur.bereich,S.cur.kapitel,S.cur.unter,'multistep',S.cur.index+1,0);
+        else openUnter(S.cur.bereich,S.cur.kapitel,S.cur.unter);
+      };
+      btns.appendChild(nBtn);
+    } else {
+      const nBtn=document.createElement('button');
+      nBtn.className='btn btn-primary';
+      nBtn.textContent='Weiter zu Schritt '+(S.cur.stepIdx+2)+' →';
+      nBtn.onclick=()=>{
+        renderQuestion(S.cur.bereich,S.cur.kapitel,S.cur.unter,'multistep',S.cur.index,S.cur.stepIdx+1, true);
+      };
+      btns.appendChild(nBtn);
+    }
+  } else {
+    S.streak=0;S.totalAnswered++;
+    fb.className='feedback wrong show';
+    fb.innerHTML=`<strong>❌ Leider falsch. Versuch es nochmal!</strong>Richtige Antwort: <b>${step.a}</b><br>${step.e}`;
+    // Retry button
+    const rBtn=document.createElement('button');
+    rBtn.className='btn btn-primary';
+    rBtn.textContent='Nochmal versuchen';
+    rBtn.onclick=()=>{renderQuestion(S.cur.bereich,S.cur.kapitel,S.cur.unter,'multistep',S.cur.index,S.cur.stepIdx, true);};
+    btns.innerHTML='';
+    btns.appendChild(rBtn);
+    const bBtn=document.createElement('button');
+    bBtn.className='btn btn-secondary';
+    bBtn.textContent='← Abbrechen';
+    bBtn.onclick=()=>openUnter(S.cur.bereich,S.cur.kapitel,S.cur.unter);
+    btns.appendChild(bBtn);
+    updateStats();
+    return;
+  }
+  updateStats();updateProgressMini();
+}
+
+function handleResult(ok,expl,regel){
+  const u=C[S.cur.bereich].kapitel[S.cur.kapitel].unter[S.cur.unter];
+  const q=getTasks(S.cur.bereich,S.cur.kapitel,S.cur.unter,S.cur.level)[S.cur.index];
+  const fb=document.getElementById('fb');
+  const btns=document.getElementById('btns');
+  if(ok){
+    S.streak++;S.totalCorrect++;S.totalAnswered++;
+    let gain=10+(S.streak>=3?15:0);
+    addXP(gain);
+    fb.className='feedback correct show';
+    fb.innerHTML=`<strong>✅ Richtig! ${S.streak>=3?'🔥 Streak +15 XP':''}</strong>${expl}${regel?`<div class="regel"><b>📘 Merksatz:</b> ${regel}</div>`:''}`;
+  } else {
+    S.streak=0;S.totalAnswered++;
+    fb.className='feedback wrong show';
+    const correctAns = q.t==='fill' ? (q.a||'') : '';
+    fb.innerHTML=`<strong>❌ Leider falsch.</strong>${correctAns?`Richtige Antwort: <b>${correctAns}</b><br>`:''}${expl}${regel?`<div class="regel"><b>📘 Merksatz:</b> ${regel}</div>`:''}`;
+  }
+  const pk=`${S.cur.bereich}.${S.cur.kapitel}.${S.cur.unter}.${S.cur.level}`;
+  if(!S.prog[pk])S.prog[pk]={done:0};
+  S.prog[pk].done=Math.max(S.prog[pk].done,S.cur.index+(ok?1:0));
+  save();updateStats();updateProgressMini();
+  btns.innerHTML='';
+  const bBtn=document.createElement('button');
+  bBtn.className='btn btn-secondary';
+  bBtn.textContent='← Zurück';
+  bBtn.onclick=()=>openUnter(S.cur.bereich,S.cur.kapitel,S.cur.unter);
+  btns.appendChild(bBtn);
+  const isLast=S.cur.index>=getTasks(S.cur.bereich,S.cur.kapitel,S.cur.unter,S.cur.level).length-1;
+  if(!isLast){
+    const nBtn=document.createElement('button');
+    nBtn.className='btn btn-primary';
+    nBtn.textContent='Weiter →';
+    nBtn.onclick=()=>renderQuestion(S.cur.bereich,S.cur.kapitel,S.cur.unter,S.cur.level,S.cur.index+1);
+    btns.appendChild(nBtn);
+  } else {
+    const nBtn=document.createElement('button');
+    nBtn.className='btn btn-primary';
+    nBtn.textContent='🎉 Alle 30 geschafft! Zur Übersicht';
+    nBtn.onclick=()=>openUnter(S.cur.bereich,S.cur.kapitel,S.cur.unter);
+    btns.appendChild(nBtn);
+  }
+}
+
+function addXP(n){
+  const old=S.level;
+  S.xp+=n;S.level=Math.floor(S.xp/100)+1;
+  const fl=document.getElementById('xpFloat');
+  fl.textContent='+'+n+' XP';
+  fl.style.display='block';
+  clearTimeout(fl._t);
+  fl._t=setTimeout(()=>fl.style.display='none',1400);
+  if(S.level>old){
+    document.getElementById('lvlTitle').textContent='Level '+S.level+'!';
+    document.getElementById('lvlOverlay').classList.add('show');
+  }
+  save();
+}
+function closeLvl(){document.getElementById('lvlOverlay').classList.remove('show');}
+
+function updateStats(){
+  document.getElementById('sXp').textContent=S.xp;
+  document.getElementById('sLevel').textContent=S.level;
+  document.getElementById('sStreak').textContent=S.streak;
+  document.getElementById('sCorrect').textContent=S.totalCorrect;
+}
+
+function getUnterStat(b,k,u){
+  let done=0,total=0;
+  ['einstieg','grundlagen','fortgeschritten','experten'].forEach(lv=>{
+    total+=30;
+    const st=S.prog[`${b}.${k}.${u}.${lv}`];
+    if(st)done+=Math.min(st.done,30);
+  });
+  total+=8;
+  const stMS=S.prog[`${b}.${k}.${u}.multistep`];
+  if(stMS)done+=Math.min(stMS.done,8);
+  return{done,total};
+}
+function getKapitelStat(b,k){
+  let done=0,total=0;
+  for(const uid of Object.keys(C[b].kapitel[k].unter)){
+    const s=getUnterStat(b,k,uid);done+=s.done;total+=s.total;
+  }
+  return{done,total};
+}
+function getBereichStat(b){
+  let done=0,total=0;
+  for(const kid of Object.keys(C[b].kapitel)){
+    const s=getKapitelStat(b,kid);done+=s.done;total+=s.total;
+  }
+  return{done,total};
+}
+function updateProgressMini(){
+  let done=0,total=0;
+  for(const b of Object.keys(C)){
+    const s=getBereichStat(b);done+=s.done;total+=s.total;
+  }
+  const pct=total?(done/total)*100:0;
+  document.getElementById('progressMini').style.width=pct+'%';
+}
+
+document.getElementById('reset').addEventListener('click',()=>{
+  if(confirm('Wirklich gesamten Fortschritt löschen?')){
+    S=defaults();save();loadTheme();
+
+/* ============ LERNSPIEL ============ */
+let gameState = null;
+
+function startGame(bid, kid){
+  const b = C[bid];
+  const k = b.kapitel[kid];
+  const unters = Object.keys(k.unter);
+  // Sammle 12 Fragen aus verschiedenen Unterkapiteln (Einstieg/Grundlagen)
+  const questions = [];
+  for(let i=0; i<12; i++){
+    const uid = unters[i % unters.length];
+    const u = k.unter[uid];
+    srand(hash(bid+kid+uid+'game'+i));
+    try{
+      const q = u.gen.einstieg ? u.gen.einstieg(i) : u.gen.grundlagen(i);
+      if(q && q.t !== 'multi') questions.push({...q, uid});
+    }catch(e){}
+  }
+  if(questions.length < 5){
+    alert('Nicht genug Fragen für das Spiel verfügbar.');
+    return;
+  }
+  gameState = {
+    bid, kid,
+    questions: questions.slice(0,10),
+    index: 0,
+    score: 0,
+    correct: 0,
+    timeLeft: 90,
+    timer: null,
+    answered: false
+  };
+  renderGameQuestion();
+  gameState.timer = setInterval(()=>{
+    gameState.timeLeft--;
+    const el = document.getElementById('gameTimer');
+    if(el) el.textContent = gameState.timeLeft + 's';
+    if(gameState.timeLeft <= 0) endGame();
+  }, 1000);
+}
+
+function renderGameQuestion(){
+  if(!gameState) return;
+  const q = gameState.questions[gameState.index];
+  const total = gameState.questions.length;
+  let h = `<div class="breadcrumb" onclick="endGame(true)"><span>🏠 Zurück</span> › Lernspiel</div>`;
+  h += `<div class="q-card">`;
+  h += `<div class="game-timer" id="gameTimer">${gameState.timeLeft}s</div>`;
+  h += `<div class="game-score">Punkte: ${gameState.score} · Frage ${gameState.index+1}/${total}</div>`;
+  h += `<span class="q-type t-${q.t}">${typeLabel(q.t)}</span>`;
+  h += `<div class="q-text">${q.f}</div>`;
+  if(q.t === 'mc'){
+    h += `<div class="options" id="opts">`;
+    q.o.forEach((o,i)=>{
+      h += `<button class="opt" onclick="answerGameMC(${i},${q.r})">${o}</button>`;
+    });
+    h += `</div>`;
+  } else if(q.t === 'fill'){
+    h += `<div class="fill-row"><input type="text" id="gameFill" placeholder="Antwort..." autocomplete="off"><button class="btn btn-primary" onclick="answerGameFill()">OK</button></div>`;
+  }
+  h += `<div class="feedback" id="fb"></div>`;
+  h += `</div>`;
+  main.innerHTML = h;
+  const inp = document.getElementById('gameFill');
+  if(inp){
+    inp.focus();
+    inp.addEventListener('keydown', e => { if(e.key==='Enter') answerGameFill(); });
+  }
+}
+
+function answerGameMC(i, correct){
+  if(gameState.answered) return;
+  gameState.answered = true;
+  const ok = i === correct;
+  const opts = document.querySelectorAll('.opt');
+  opts.forEach((o,j)=>{
+    o.classList.add('dis');
+    if(j===correct) o.classList.add('correct');
+    if(j===i && !ok) o.classList.add('wrong');
+  });
+  processGameAnswer(ok);
+}
+
+function answerGameFill(){
+  if(gameState.answered) return;
+  const inp = document.getElementById('gameFill');
+  const val = inp.value || '';
+  if(!val.trim()) return;
+  gameState.answered = true;
+  const q = gameState.questions[gameState.index];
+  const ok = answersMatch(val, q.a, q.alt);
+  inp.classList.add(ok?'correct':'wrong');
+  inp.disabled = true;
+  processGameAnswer(ok);
+}
+
+function processGameAnswer(ok){
+  const fb = document.getElementById('fb');
+  if(ok){
+    gameState.correct++;
+    const points = Math.max(5, Math.floor(gameState.timeLeft / 3));
+    gameState.score += points;
+    addXP(points);
+    fb.className = 'feedback correct show';
+    fb.innerHTML = `<strong>✅ Richtig! +${points} Punkte</strong>`;
+  } else {
+    fb.className = 'feedback wrong show';
+    const q = gameState.questions[gameState.index];
+    const ans = q.t==='mc' ? q.o[q.r] : q.a;
+    fb.innerHTML = `<strong>❌ Leider falsch.</strong> Richtig: <b>${ans}</b>`;
+  }
+  setTimeout(()=>{
+    gameState.index++;
+    gameState.answered = false;
+    if(gameState.index >= gameState.questions.length) endGame();
+    else renderGameQuestion();
+  }, 900);
+}
+
+function endGame(aborted){
+  if(gameState && gameState.timer) clearInterval(gameState.timer);
+  if(aborted){
+    openKapitel(gameState.bid, gameState.kid);
+    gameState = null;
+    return;
+  }
+  const gs = gameState;
+  gameState = null;
+  let h = `<div class="game-end">`;
+  h += `<h2>🎉 Spiel beendet!</h2>`;
+  h += `<p style="font-size:1.2em;margin:15px 0">Du hast <b>${gs.correct}</b> von <b>${gs.questions.length}</b> richtig.</p>`;
+  h += `<p style="font-size:1.4em;color:#667eea;font-weight:700">${gs.score} Punkte</p>`;
+  h += `<p style="margin:10px 0">+${gs.score} XP gesammelt!</p>`;
+  h += `<div class="btn-row" style="justify-content:center">`;
+  h += `<button class="btn btn-primary" onclick="startGame('${gs.bid}','${gs.kid}')">Nochmal spielen</button>`;
+  h += `<button class="btn btn-secondary" onclick="openKapitel('${gs.bid}','${gs.kid}')">Zurück zum Kapitel</button>`;
+  h += `</div></div>`;
+  main.innerHTML = h;
+  updateStats();
+}
+
+renderHome();
+  }
+});
+
+loadTheme();
+
+/* ============ LERNSPIEL ============ */
+let gameState = null;
+
+function startGame(bid, kid){
+  const b = C[bid];
+  const k = b.kapitel[kid];
+  const unters = Object.keys(k.unter);
+  // Sammle 12 Fragen aus verschiedenen Unterkapiteln (Einstieg/Grundlagen)
+  const questions = [];
+  for(let i=0; i<12; i++){
+    const uid = unters[i % unters.length];
+    const u = k.unter[uid];
+    srand(hash(bid+kid+uid+'game'+i));
+    try{
+      const q = u.gen.einstieg ? u.gen.einstieg(i) : u.gen.grundlagen(i);
+      if(q && q.t !== 'multi') questions.push({...q, uid});
+    }catch(e){}
+  }
+  if(questions.length < 5){
+    alert('Nicht genug Fragen für das Spiel verfügbar.');
+    return;
+  }
+  gameState = {
+    bid, kid,
+    questions: questions.slice(0,10),
+    index: 0,
+    score: 0,
+    correct: 0,
+    timeLeft: 90,
+    timer: null,
+    answered: false
+  };
+  renderGameQuestion();
+  gameState.timer = setInterval(()=>{
+    gameState.timeLeft--;
+    const el = document.getElementById('gameTimer');
+    if(el) el.textContent = gameState.timeLeft + 's';
+    if(gameState.timeLeft <= 0) endGame();
+  }, 1000);
+}
+
+function renderGameQuestion(){
+  if(!gameState) return;
+  const q = gameState.questions[gameState.index];
+  const total = gameState.questions.length;
+  let h = `<div class="breadcrumb" onclick="endGame(true)"><span>🏠 Zurück</span> › Lernspiel</div>`;
+  h += `<div class="q-card">`;
+  h += `<div class="game-timer" id="gameTimer">${gameState.timeLeft}s</div>`;
+  h += `<div class="game-score">Punkte: ${gameState.score} · Frage ${gameState.index+1}/${total}</div>`;
+  h += `<span class="q-type t-${q.t}">${typeLabel(q.t)}</span>`;
+  h += `<div class="q-text">${q.f}</div>`;
+  if(q.t === 'mc'){
+    h += `<div class="options" id="opts">`;
+    q.o.forEach((o,i)=>{
+      h += `<button class="opt" onclick="answerGameMC(${i},${q.r})">${o}</button>`;
+    });
+    h += `</div>`;
+  } else if(q.t === 'fill'){
+    h += `<div class="fill-row"><input type="text" id="gameFill" placeholder="Antwort..." autocomplete="off"><button class="btn btn-primary" onclick="answerGameFill()">OK</button></div>`;
+  }
+  h += `<div class="feedback" id="fb"></div>`;
+  h += `</div>`;
+  main.innerHTML = h;
+  const inp = document.getElementById('gameFill');
+  if(inp){
+    inp.focus();
+    inp.addEventListener('keydown', e => { if(e.key==='Enter') answerGameFill(); });
+  }
+}
+
+function answerGameMC(i, correct){
+  if(gameState.answered) return;
+  gameState.answered = true;
+  const ok = i === correct;
+  const opts = document.querySelectorAll('.opt');
+  opts.forEach((o,j)=>{
+    o.classList.add('dis');
+    if(j===correct) o.classList.add('correct');
+    if(j===i && !ok) o.classList.add('wrong');
+  });
+  processGameAnswer(ok);
+}
+
+function answerGameFill(){
+  if(gameState.answered) return;
+  const inp = document.getElementById('gameFill');
+  const val = inp.value || '';
+  if(!val.trim()) return;
+  gameState.answered = true;
+  const q = gameState.questions[gameState.index];
+  const ok = answersMatch(val, q.a, q.alt);
+  inp.classList.add(ok?'correct':'wrong');
+  inp.disabled = true;
+  processGameAnswer(ok);
+}
+
+function processGameAnswer(ok){
+  const fb = document.getElementById('fb');
+  if(ok){
+    gameState.correct++;
+    const points = Math.max(5, Math.floor(gameState.timeLeft / 3));
+    gameState.score += points;
+    addXP(points);
+    fb.className = 'feedback correct show';
+    fb.innerHTML = `<strong>✅ Richtig! +${points} Punkte</strong>`;
+  } else {
+    fb.className = 'feedback wrong show';
+    const q = gameState.questions[gameState.index];
+    const ans = q.t==='mc' ? q.o[q.r] : q.a;
+    fb.innerHTML = `<strong>❌ Leider falsch.</strong> Richtig: <b>${ans}</b>`;
+  }
+  setTimeout(()=>{
+    gameState.index++;
+    gameState.answered = false;
+    if(gameState.index >= gameState.questions.length) endGame();
+    else renderGameQuestion();
+  }, 900);
+}
+
+function endGame(aborted){
+  if(gameState && gameState.timer) clearInterval(gameState.timer);
+  if(aborted){
+    openKapitel(gameState.bid, gameState.kid);
+    gameState = null;
+    return;
+  }
+  const gs = gameState;
+  gameState = null;
+  let h = `<div class="game-end">`;
+  h += `<h2>🎉 Spiel beendet!</h2>`;
+  h += `<p style="font-size:1.2em;margin:15px 0">Du hast <b>${gs.correct}</b> von <b>${gs.questions.length}</b> richtig.</p>`;
+  h += `<p style="font-size:1.4em;color:#667eea;font-weight:700">${gs.score} Punkte</p>`;
+  h += `<p style="margin:10px 0">+${gs.score} XP gesammelt!</p>`;
+  h += `<div class="btn-row" style="justify-content:center">`;
+  h += `<button class="btn btn-primary" onclick="startGame('${gs.bid}','${gs.kid}')">Nochmal spielen</button>`;
+  h += `<button class="btn btn-secondary" onclick="openKapitel('${gs.bid}','${gs.kid}')">Zurück zum Kapitel</button>`;
+  h += `</div></div>`;
+  main.innerHTML = h;
+  updateStats();
+}
+
+renderHome();
+</script>
+</body>
+</html>
